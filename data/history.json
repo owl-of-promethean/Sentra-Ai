@@ -1,0 +1,1930 @@
+[
+  {
+    "entry_type": "soc",
+    "internal_id": "4a344d0c-7ed5-47a4-b525-07f247dd364a",
+    "display_id": "ID-4a34",
+    "activity_type": "Authentication Failures and Endpoint Probing",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Over a 4-second window, a single source IP (185.220.101.42) issued four consecutive POST requests to /api/login, all returning HTTP 401 Unauthorized, immediately followed by a GET request to /admin returning HTTP 403 Forbidden. The 100% error rate and consistent ~1-second interval between requests suggest automated attempts to test credentials and access restricted paths, though automated client misconfigurations or administrative testing remain plausible explanations.",
+    "timestamp": "2026-08-28T00:30:02.304699Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "8c551fe4-c11a-4237-bf7c-4ed8b49dd993",
+    "display_id": "ID-8c55",
+    "activity_type": "Authentication Failures and Restricted Endpoint Access",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "In a span of approximately 4 seconds, a single IP address (185.220.101.42) issued 5 requests resulting in a 100% error rate. The activity comprised 4 consecutive POST requests to /api/login returning HTTP 401 Unauthorized status codes spaced roughly 1 second apart, followed by a GET request to /admin returning an HTTP 403 Forbidden response. While the low volume and short duration make intent ambiguous, the combination of authentication failures and subsequent admin path access warrants monitoring.",
+    "timestamp": "2026-08-28T10:58:24.275593Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "61505a43-8fa6-4321-ad13-907db1ae4f1e",
+    "display_id": "ID-6150",
+    "activity_type": "Internal Failed Authentication Attempts",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "During an 8.5-second window, 5 HTTP requests were recorded across two internal IP addresses. Source IP 192.168.1.100 generated three consecutive failed POST requests (HTTP 401) to the '/api/login' endpoint spaced approximately 2.1 seconds apart, accounting for an overall 60% error rate. Concurrently, IP 192.168.1.101 generated two successful GET requests (HTTP 200) for standard web resources. Given the low volume of failed attempts (3 failures) and human-like pacing (>2 seconds), this activity may represent a user mistyping credentials or a misconfigured internal client, though automated credential guessing from an internal host cannot be entirely ruled out.",
+    "timestamp": "2026-08-29T01:09:27.003368Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d594210a-4d4d-4f29-8bd3-5c261baf9e71",
+    "display_id": "ID-d594",
+    "activity_type": "Low-Volume Internal Path Activity and API Error",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "During an 8.56-second window, 5 HTTP requests were observed originating from 4 internal IP addresses (192.168.1.0/24 subnet) sharing an identical Windows User-Agent string. While most requests targeted benign endpoints (/health, /robots.txt, /api/status) returning HTTP 200, IP 192.168.1.100 submitted a POST request to /api/query resulting in an HTTP 500 error followed by a GET request to /config.php returning an HTTP 404 error. The overall traffic volume is extremely low (0.584 req/sec), making it ambiguous whether this represents light internal reconnaissance, developer testing, or routine system monitoring.",
+    "timestamp": "2026-08-29T01:09:47.030755Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "display_id": "ID-ebde",
+    "activity_type": "Automated Web Application Scanning and Security Simulation",
+    "trigger_reasons": [
+      "multiple failures from 10.9.9.9",
+      "high error rate"
+    ],
+    "severity": "HIGH",
+    "status": "analyzed",
+    "summary": "During a 0.571-second window, source IP 10.9.9.9 transmitted 10 HTTP requests using the User-Agent string 'sqlmap/1.7 (attack-sim)', achieving a 100% HTTP error rate. The activity targeted seven distinct paths including authentication endpoints, administrative resources, and query endpoints with explicit SQL injection payloads (e.g., UNION SELECT, OR 1=1) and path traversal attempts (/etc/passwd). Notably, four requests triggered HTTP 500 Internal Server Errors, indicating potential backend handling exceptions triggered by the injection parameters.",
+    "timestamp": "2026-08-29T01:16:03.359334Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "0ecc448e-e767-42d3-ab10-8a96370b4fdb",
+    "display_id": "AAI-0ecc",
+    "activity_type": "multiple failures from 10.9.9.9, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 30%)",
+    "timestamp": "2026-08-29T01:16:05.776478Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "cc49b90c-826d-4410-9ca0-f6ed7ad6e110",
+    "display_id": "AUDIT-cc49",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T01:17:36.687288Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde",
+    "error": "Audit response parse/validation error: Expecting value: line 1 column 1 (char 0)"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "c9d847dc-63fc-4af4-9d46-c4cf3d3e342a",
+    "display_id": "AUDIT-c9d8",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T01:18:12.435953Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "7c774b0f-0b6a-42f2-9dc5-060141f92d77",
+    "display_id": "AUDIT-7c77",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T01:18:49.688410Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "649d1e00-8108-4168-8e5a-5068603d4ddb",
+    "display_id": "AAI-649d",
+    "activity_type": "Automated Web Application Scanning and Security Simulation",
+    "trigger_reasons": null,
+    "severity": "HIGH",
+    "status": "completed",
+    "summary": "Verdict: VULNERABLE (confidence 95%)",
+    "timestamp": "2026-08-29T01:20:04.145894Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "f7357bc3-6231-4ba6-8c0a-150f4269acc6",
+    "display_id": "AUDIT-f735",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T01:41:02.605406Z",
+    "investigation_id": "ebdef514-0a54-4d95-bafe-840359b98e45",
+    "investigation_display_id": "ID-ebde",
+    "error": "Audit response parse/validation error: Expecting value: line 1 column 1 (char 0)"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d0d9d251-23dc-488b-852b-d72b6bc79ac9",
+    "display_id": "ID-d0d9",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.9.9.9",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": null,
+    "timestamp": "2026-08-29T01:56:26.136677Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "f288277b-29fa-4c00-93a7-8b2f776120ce",
+    "display_id": "AAI-f288",
+    "activity_type": "multiple failures from 10.9.9.9, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 95%)",
+    "timestamp": "2026-08-29T01:56:35.974650Z",
+    "investigation_id": "d0d9d251-23dc-488b-852b-d72b6bc79ac9",
+    "investigation_display_id": "ID-d0d9"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "4c018563-2dc0-4af6-a96a-857dc48d6ff2",
+    "display_id": "ID-4c01",
+    "activity_type": "Sequential Authentication Failures",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "During a 6.42-second window, a single internal source IP (192.168.1.100) submitted 4 HTTP requests, starting with a successful GET request to /api/users followed by 3 consecutive failed POST requests (HTTP 401) to /api/login spaced approximately 2.1 seconds apart. While the 3 failed logins result in an error rate of 75%, the very low total volume (4 requests) and regular ~2.1-second intervals are consistent with human typing errors, a misconfigured application client, or early-stage credential guessing.",
+    "timestamp": "2026-08-29T02:02:46.552003Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "e5a08366-fa6e-493e-9ca8-ee16b2a3d7e5",
+    "display_id": "ID-e5a0",
+    "activity_type": "Distributed Internal Web Requests",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "During an 8.5-second window, 5 HTTP requests were observed originating from 4 distinct internal IP addresses (192.168.1.100\u2013192.168.1.103). The requests consist of routine web traffic (fetching index.html, style.css, calling API endpoints) and a single attempt to access /admin which returned an HTTP 403 Forbidden. Although automated rules triggered a 'rapid path scanning' alert due to 5 unique paths being requested, the low request volume (0.585 req/s) and distribution across four distinct IPs indicate normal multi-user internal traffic rather than an automated scan.",
+    "timestamp": "2026-08-29T02:02:56.581104Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3214f7e3-fca5-4b08-83a8-9e48bb1a3052",
+    "display_id": "ID-3214",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": null,
+    "timestamp": "2026-08-29T02:03:06.654614Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "21d53669-5d3d-4050-9164-307cb171d4a9",
+    "display_id": "ID-21d5",
+    "activity_type": "Low-Volume Internal Traffic with Isolated Access Errors",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "During an 8.57-second window, 5 total HTTP requests were observed across 3 internal IP addresses (192.168.1.100, 192.168.1.101, and 192.168.1.102). A behavioral trigger for 'rapid path scanning' was logged due to 5 unique endpoints being queried; however, the request rate is low (0.583 req/s) and requests originated from multiple sources. IP 192.168.1.100 generated two errors (HTTP 401 on /api/login and HTTP 403 on /admin), while IP 192.168.1.101 successfully retrieved static assets (/index.html, /style.css) and IP 192.168.1.102 accessed /api/data. The evidence does not support automated scanning and is more consistent with routine multi-user web browsing combined with an unauthenticated or unauthorized access attempt on IP 192.168.1.100.",
+    "timestamp": "2026-08-29T02:03:56.739505Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "819ad026-0e80-495c-8766-3898273faf41",
+    "display_id": "ID-819a",
+    "activity_type": "Automated SQL Injection Security Simulation",
+    "trigger_reasons": [
+      "multiple failures from 10.9.9.9",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "During a 2-second window, internal IP 10.9.9.9 generated 3 HTTP GET requests containing SQL injection payloads targeting '/api/search' and '/api/users'. All 3 requests returned HTTP 500 Internal Server Error status codes and used the User-Agent 'sqlmap/1.7 (attack-sim)'. While the explicitly marked User-Agent and private IP address strongly suggest authorized security testing or attack simulation, the HTTP 500 responses indicate unhandled server-side exceptions that require application security review.",
+    "timestamp": "2026-08-29T02:14:17.402747Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f5dac52d-c9c3-4fdc-b26c-7b007d915757",
+    "display_id": "ID-f5da",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.9.9.9",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": null,
+    "timestamp": "2026-08-29T02:14:27.425257Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "4bdac2a9-ea5e-4582-aebe-6ed0d65007e1",
+    "display_id": "AAI-4bda",
+    "activity_type": "Automated SQL Injection Security Simulation",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: VULNERABLE (confidence 90%)",
+    "timestamp": "2026-08-29T02:15:49.018161Z",
+    "investigation_id": "819ad026-0e80-495c-8766-3898273faf41",
+    "investigation_display_id": "ID-819a"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "78d6da42-70c3-4c03-9709-e06998af335e",
+    "display_id": "AAI-78d6",
+    "activity_type": "Automated SQL Injection Security Simulation",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: VULNERABLE (confidence 90%)",
+    "timestamp": "2026-08-29T02:16:25.938064Z",
+    "investigation_id": "819ad026-0e80-495c-8766-3898273faf41",
+    "investigation_display_id": "ID-819a"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "bf208d87-7c8d-4255-8b57-1e376bb4c609",
+    "display_id": "ID-bf20",
+    "activity_type": "SQL Injection Probing / Application Vulnerability Scanning",
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": "HIGH",
+    "status": "analyzed",
+    "summary": "Within a 10-second window, a single internal IP (10.10.10.50) issued three HTTP GET requests to the /search endpoint containing explicit SQL syntax payloads (e.g., UNION SELECT, OR 1=1). All three requests triggered HTTP 500 Internal Server Errors, indicating unhandled application or database exceptions when processing input parameters.",
+    "timestamp": "2026-08-29T15:23:59.085751Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "display_id": "ID-f848",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": null,
+    "timestamp": "2026-08-29T15:40:52.924301Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "2aeadc11-5b1c-45da-8f4e-5f312b817d66",
+    "display_id": "ID-2aea",
+    "activity_type": "Potential SQL Injection Probing",
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": "HIGH",
+    "status": "analyzed",
+    "summary": "Source IP 10.10.10.50 submitted three GET requests to the /search endpoint within a single second, all containing explicit SQL syntax payloads (such as OR 1=1 and UNION SELECT). Every request resulted in an HTTP 500 Internal Server Error, indicating the backend application experienced unhandled database or application errors when processing these inputs. While this pattern strongly indicates SQL injection vulnerability testing, authorized security testing or automated quality assurance testing remain viable alternative explanations.",
+    "timestamp": "2026-08-29T16:01:40.807348Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "64f3210a-d5bb-4eb4-ba9b-b064c7bbce3f",
+    "display_id": "AUDIT-64f3",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T16:16:37.827874Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848",
+    "error": "Audit response parse/validation error: Expecting value: line 1 column 1 (char 0)"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "9620bcec-2a65-4869-995d-d0ae24d9f13e",
+    "display_id": "AUDIT-9620",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T16:17:00.446015Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "287edc8a-f341-4681-a247-be1675c82ac3",
+    "display_id": "AAI-287e",
+    "activity_type": "Potential SQL Injection Probing",
+    "trigger_reasons": null,
+    "severity": "HIGH",
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 95%)",
+    "timestamp": "2026-08-29T16:18:05.763188Z",
+    "investigation_id": "2aeadc11-5b1c-45da-8f4e-5f312b817d66",
+    "investigation_display_id": "ID-2aea"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "688fa739-d605-4a46-8ce4-c5506a5d5c5e",
+    "display_id": "AUDIT-688f",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T16:55:05.116345Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "2cfc0d14-10a0-4fb1-90f5-cb7a534414c9",
+    "display_id": "AAI-2cfc",
+    "activity_type": "multiple failures from 10.10.10.50, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "queued",
+    "summary": null,
+    "timestamp": "2026-08-29T16:55:48.509194Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "6b8146aa-b44c-4366-b6cc-f72185de261e",
+    "display_id": "AUDIT-6b81",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T16:59:20.556261Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "e474b517-d9fd-404a-9cc4-47c30ba6c240",
+    "display_id": "AUDIT-e474",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T16:59:45.920576Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "40decd86-b5d2-4ec9-8331-80cd64751a76",
+    "display_id": "AAI-40de",
+    "activity_type": "multiple failures from 10.10.10.50, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 95%)",
+    "timestamp": "2026-08-29T17:00:15.265877Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "bf68b413-3af7-4b7a-8b49-fecd9f91026f",
+    "display_id": "AUDIT-bf68",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T17:22:13.070748Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "28be58b2-6c3f-402b-b8a3-e1ff282c9d0c",
+    "display_id": "AAI-28be",
+    "activity_type": "multiple failures from 10.10.10.50, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 90%)",
+    "timestamp": "2026-08-29T17:22:51.898477Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "b3a5a742-e600-42ce-81d8-cfeb6178ec4f",
+    "display_id": "AUDIT-b3a5",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-29T17:33:17.579286Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "2ac667c7-52ef-4df0-bd71-46f6a2e1a0d6",
+    "display_id": "AAI-2ac6",
+    "activity_type": "multiple failures from 10.10.10.50, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 30%)",
+    "timestamp": "2026-08-29T17:34:28.449548Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "d6b147fb-1b18-4020-a01d-26a4951599de",
+    "display_id": "AAI-d6b1",
+    "activity_type": "multiple failures from 10.10.10.50, high error rate",
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 30%)",
+    "timestamp": "2026-08-29T17:36:39.338235Z",
+    "investigation_id": "f84819c2-b47c-4a40-ba6c-078d96b48516",
+    "investigation_display_id": "ID-f848"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "2f09767a-5a7e-496a-a94d-75e18ed26f4d",
+    "display_id": "ID-2f09",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 17.735369048s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}",
+    "timestamp": "2026-08-29T17:43:41.407033Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "9f8ee220-7785-472b-af12-8089d011d9e0",
+    "display_id": "AUDIT-9f8e",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T17:44:18.039930Z",
+    "investigation_id": "2f09767a-5a7e-496a-a94d-75e18ed26f4d",
+    "investigation_display_id": "ID-2f09",
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 41.007650613s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "64d1fb9d-461f-4ca3-aaee-0d77c3574a0e",
+    "display_id": "AUDIT-64d1",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T17:44:42.979443Z",
+    "investigation_id": "2f09767a-5a7e-496a-a94d-75e18ed26f4d",
+    "investigation_display_id": "ID-2f09",
+    "error": "Gemini API error: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 16.195264975s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '16s'}]}}"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "a10c0761-8fc2-45ce-86e0-43ead7e5ad54",
+    "display_id": "AUDIT-a10c",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T18:18:42.925355Z",
+    "investigation_id": "2f09767a-5a7e-496a-a94d-75e18ed26f4d",
+    "investigation_display_id": "ID-2f09",
+    "error": "Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f58fe0eb-c412-46d7-9eea-d6c374008906",
+    "display_id": "ID-f58f",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:20:32.241161Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "6bf73232-3b60-41df-abbb-29a1dcab4493",
+    "display_id": "AUDIT-6bf7",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T18:20:55.655097Z",
+    "investigation_id": "2f09767a-5a7e-496a-a94d-75e18ed26f4d",
+    "investigation_display_id": "ID-2f09",
+    "error": "Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "53e1d400-f30f-4845-a904-4859937b577c",
+    "display_id": "ID-53e1",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:22:12.373150Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "efbf2a37-170b-4285-b7b7-7cf2b7511d78",
+    "display_id": "ID-efbf",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'service': 'generativelanguage.googleapis.com', 'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent'}}]}}",
+    "timestamp": "2026-08-29T18:22:22.400025Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "3c68aa2e-2565-47ab-a22a-26b411869d92",
+    "display_id": "AUDIT-3c68",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T18:25:51.348620Z",
+    "investigation_id": "53e1d400-f30f-4845-a904-4859937b577c",
+    "investigation_display_id": "ID-53e1",
+    "error": "Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'service': 'generativelanguage.googleapis.com', 'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent'}}]}}"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f1db84a8-07ed-4b88-8bd4-cd4d3c2b52ba",
+    "display_id": "ID-f1db",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:38:44.434892Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c0c2e356-a03e-46a6-b3ba-773befc1687d",
+    "display_id": "ID-c0c2",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:39:04.504531Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c58bcbe6-119e-4c35-a36a-4b5e7a59ebb6",
+    "display_id": "ID-c58b",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:39:44.637625Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "02bac359-fd08-448c-92cd-678edd222cce",
+    "display_id": "ID-02ba",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:43:24.909314Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3d97fbfe-27cb-4571-a413-8720dd8e0809",
+    "display_id": "ID-3d97",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:43:44.969487Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "dd204cf0-cb6b-4f71-a527-16e8da56bb3c",
+    "display_id": "AUDIT-dd20",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T18:43:46.897885Z",
+    "investigation_id": "02bac359-fd08-448c-92cd-678edd222cce",
+    "investigation_display_id": "ID-02ba",
+    "error": "Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3473cfa1-9a0c-464c-8437-93fd544535b3",
+    "display_id": "ID-3473",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Gemini API error: 401 UNAUTHENTICATED. {'error': {'code': 401, 'message': 'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.', 'status': 'UNAUTHENTICATED', 'details': [{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'ACCESS_TOKEN_TYPE_UNSUPPORTED', 'metadata': {'method': 'google.ai.generativelanguage.v1beta.GenerativeService.GenerateContent', 'service': 'generativelanguage.googleapis.com'}}]}}",
+    "timestamp": "2026-08-29T18:56:02.940890Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "fb883ddd-004d-44a5-bd40-51aed0c73d84",
+    "display_id": "ID-fb88",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 11623, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-29T19:16:43.111521Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c8a87e99-c73e-4900-8d33-b9511bd0135c",
+    "display_id": "ID-c8a8",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 11625, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-29T19:26:40.167785Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "b181f566-f91e-407d-8610-2019b0b5bb79",
+    "display_id": "ID-b181",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 11624, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-29T19:27:50.364766Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f4df85ab-e964-459c-9d1d-2c96c5c6c8d2",
+    "display_id": "ID-f4df",
+    "activity_type": "SQL Injection Attempt",
+    "trigger_reasons": [
+      "multiple failures from 10.10.10.50",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Three consecutive GET requests from a single IP (10.10.10.50) to the /search endpoint contained classic SQL injection payloads and all returned HTTP 500 errors within a 2\u2011second window, indicating a likely attempt to probe for database vulnerabilities. While the pattern strongly suggests malicious intent, the limited volume and lack of additional context leave room for benign explanations such as automated vulnerability scanning or misconfigured client requests.",
+    "timestamp": "2026-08-29T19:36:30.211878Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "0457079d-7b14-431d-afc8-93c064020d5d",
+    "display_id": "AUDIT-0457",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T19:36:52.037221Z",
+    "investigation_id": "f4df85ab-e964-459c-9d1d-2c96c5c6c8d2",
+    "investigation_display_id": "ID-f4df",
+    "error": "Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 16495, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "72029068-2db7-4073-824b-c86e80cdb613",
+    "display_id": "AUDIT-7202",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-29T19:36:55.796031Z",
+    "investigation_id": "f4df85ab-e964-459c-9d1d-2c96c5c6c8d2",
+    "investigation_display_id": "ID-f4df",
+    "error": "Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 22179, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "8f724644-42b7-4887-962f-c1c57ea45551",
+    "display_id": "AAI-8f72",
+    "activity_type": "SQL Injection Attempt",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: VULNERABLE (confidence 95%)",
+    "timestamp": "2026-08-29T19:37:36.698717Z",
+    "investigation_id": "f4df85ab-e964-459c-9d1d-2c96c5c6c8d2",
+    "investigation_display_id": "ID-f4df"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "e3312b10-65f9-4a79-b761-913c23ee2cd8",
+    "display_id": "ID-e331",
+    "activity_type": "Authentication Failure Spike",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive HTTP error responses (four 401s from POST /api/login and one 403 from GET /admin) were generated by a single IP (185.220.101.42) within a 4\u2011second window. The error rate is 100\u202f% and the request rate is ~1.25\u202freq/s, which is higher than typical user activity but below the thresholds for a classic brute\u2011force or credential\u2011stuffing attack. The pattern could represent a low\u2011volume brute\u2011force attempt, a misconfigured client repeatedly sending bad credentials, or a legitimate user entering incorrect passwords. No successful authentication was observed, and the limited number of attempts makes it difficult to confirm malicious intent.",
+    "timestamp": "2026-08-30T10:42:50.765725Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "3dee158f-4028-4296-b195-22b2c2b5f2aa",
+    "display_id": "AUDIT-3dee",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T10:43:28.636305Z",
+    "investigation_id": "e3312b10-65f9-4a79-b761-913c23ee2cd8",
+    "investigation_display_id": "ID-e331",
+    "error": "Groq API error (APIStatusError): Error code: 413 - {'error': {'message': 'Request too large for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 8051, please reduce your message size and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "6c0bf7a2-480d-45f3-9781-ade1745ae81c",
+    "display_id": "AAI-6c0b",
+    "activity_type": "Authentication Failure Spike",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 30%)",
+    "timestamp": "2026-08-30T10:44:09.774311Z",
+    "investigation_id": "e3312b10-65f9-4a79-b761-913c23ee2cd8",
+    "investigation_display_id": "ID-e331"
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "d5402902-b336-42da-80a6-758d42a380ed",
+    "display_id": "AUDIT-d540",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "complete",
+    "summary": null,
+    "timestamp": "2026-08-30T10:44:58.305048Z",
+    "investigation_id": "e3312b10-65f9-4a79-b761-913c23ee2cd8",
+    "investigation_display_id": "ID-e331"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "545725f4-7da3-48fb-9462-bb03d874e6cd",
+    "display_id": "ID-5457",
+    "activity_type": "Repeated authentication failures from single IP",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive failed authentication attempts (four 401s on POST /api/login and one 403 on GET /admin) originating from a single IP address within a four\u2011second window. The high error rate and rapid request cadence raise suspicion of a low\u2011volume brute\u2011force or credential\u2011stuffing attempt, but the limited volume and lack of successful logins also allow for benign explanations such as a misconfigured client or a user repeatedly entering an incorrect password.",
+    "timestamp": "2026-08-30T11:00:24.697584Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "19c0db99-ef11-4e98-b10b-a4fbfa0a2015",
+    "display_id": "AUDIT-19c0",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T11:01:20.251415Z",
+    "investigation_id": "545725f4-7da3-48fb-9462-bb03d874e6cd",
+    "investigation_display_id": "ID-5457",
+    "error": "Groq returned an empty response (no message content)."
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "010a8aae-b161-487d-8c28-ca74ddc45e24",
+    "display_id": "AUDIT-010a",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T11:01:54.294237Z",
+    "investigation_id": "545725f4-7da3-48fb-9462-bb03d874e6cd",
+    "investigation_display_id": "ID-5457",
+    "error": "Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 4143, Requested 6807. Please try again in 22.125s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "7d756a52-1571-48cd-8a57-fa1a362693f9",
+    "display_id": "AAI-7d75",
+    "activity_type": "Repeated authentication failures from single IP",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 20%)",
+    "timestamp": "2026-08-30T11:02:40.399049Z",
+    "investigation_id": "545725f4-7da3-48fb-9462-bb03d874e6cd",
+    "investigation_display_id": "ID-5457"
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "f300f4fa-a425-4d15-b82b-f95ab47ad742",
+    "display_id": "AAI-f300",
+    "activity_type": "Repeated authentication failures from single IP",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 20%)",
+    "timestamp": "2026-08-30T11:06:19.529731Z",
+    "investigation_id": "545725f4-7da3-48fb-9462-bb03d874e6cd",
+    "investigation_display_id": "ID-5457"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "45f28200-739b-48a1-881b-de91d38818c9",
+    "display_id": "ID-45f2",
+    "activity_type": "Path enumeration",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five rapid GET requests from a single internal IP to sequential resource paths, with a 40% error rate, suggest a brief path enumeration activity that could be either a legitimate health check or a reconnaissance scan.",
+    "timestamp": "2026-08-30T11:21:00.601919Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "9b11ae1d-891a-4158-9bfd-6ef101689009",
+    "display_id": "ID-9b11",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive GET requests from a single internal IP within the same second targeted sequential resource paths, producing mostly 200 responses with a single 404. The pattern matches a quick path enumeration that could be benign (e.g., automated health check or internal testing) or indicative of reconnaissance activity. No other malicious indicators (e.g., error messages, unusual payloads) are present, so the evidence is ambiguous.",
+    "timestamp": "2026-08-30T11:21:10.636748Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3d975389-e279-4706-9865-0c9b66dc0453",
+    "display_id": "ID-3d97",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five consecutive GET requests from a single internal IP to sequential resource paths were observed within the same second, producing four successful responses and one 404. While this pattern matches a basic reconnaissance scan, the limited volume and lack of additional suspicious indicators suggest a likely benign activity such as a health check or automated test.",
+    "timestamp": "2026-08-30T11:21:30.691676Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "83514a81-c881-4835-91d0-60535e9cd008",
+    "display_id": "ID-8351",
+    "activity_type": "Repeated HTTP 500 responses from single client",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five GET requests from IP 192.168.1.100 over a 23\u2011hour window resulted in four 500 errors and one 200. The traffic pattern is sparse and lacks typical attack signatures, suggesting a benign issue such as a misconfigured client or a temporary server fault rather than an active attack.",
+    "timestamp": "2026-08-30T11:21:40.751584Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "68b5d780-c56e-42db-8bcb-ad69923b1d0b",
+    "display_id": "ID-68b5",
+    "activity_type": "High-frequency internal GET requests with intermittent 500 errors",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests to /api/data from a single internal IP (192.168.1.100) were observed within the same second, producing a 60% error rate (3 of 5 requests returned HTTP 500). The pattern could be a benign internal health check or load test, a misconfigured client, or an application fault. While the volume is high for a single second, there is no evidence of malicious intent or credential abuse.",
+    "timestamp": "2026-08-30T11:21:50.797300Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "450512a7-a52d-409c-b27a-79d75bcdb13d",
+    "display_id": "ID-4505",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6232, Requested 2159. Please try again in 2.9325s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-30T11:22:00.830455Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "b401dd2e-774d-4df5-b23c-ec3e7a128427",
+    "display_id": "ID-b401",
+    "activity_type": "Rapid path scanning with authentication failure",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five requests from a single internal IP within the same second resulted in a 401 on a login attempt and four 404s on sequential /config/*.php paths, indicating a quick reconnaissance or misconfigured script rather than a sustained brute\u2011force attack.",
+    "timestamp": "2026-08-30T11:22:10.886959Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "10826f9f-894e-435e-b2dc-e10f0c70ad25",
+    "display_id": "ID-1082",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 5897, Requested 2334. Please try again in 1.7325s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-30T11:22:20.925597Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "b2e0e253-3d07-4069-8f04-ea7c05d0147a",
+    "display_id": "ID-b2e0",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 4560, Requested 5606. Please try again in 16.245s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-30T11:22:30.973328Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "16f9b02b-5367-4801-85c3-38e67075acb7",
+    "display_id": "ID-16f9",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 3223, Requested 5605. Please try again in 6.21s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-30T11:22:41.004077Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d1aa41a8-3ae3-47fd-ab96-2e25428984e2",
+    "display_id": "ID-d1aa",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five GET requests to sequential /resource/* paths were made from a single internal IP within the same second, producing a 40% error rate (two 404 responses). While this pattern matches a reconnaissance scan, the volume is low and the source is a private network address, suggesting a possible legitimate internal test or misconfigured client. No other suspicious indicators (e.g., unusual user\u2011agent, POST payloads, or repeated failures) were observed.",
+    "timestamp": "2026-08-30T11:23:21.098076Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "dfdc8fed-f115-4021-8fd9-1d43203cfc51",
+    "display_id": "ID-dfdc",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five GET requests to sequential /resource/* endpoints were made from a single internal IP within the same second, producing a 404 on one path. While the pattern matches a basic active scan, the volume is low and the context (internal IP, no other suspicious indicators) suggests a likely benign activity such as a health check or automated test. Further investigation is warranted to rule out malicious reconnaissance.",
+    "timestamp": "2026-08-30T11:23:31.134994Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c2097462-2fc8-43a7-ad5f-7d13e9a2a70b",
+    "display_id": "ID-c209",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "analysis_failed",
+    "summary": "Analysis failed: Groq API error (RateLimitError): Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m17c8n5ae6wae1p49ddwa79t` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 5066, Requested 5526. Please try again in 19.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+    "timestamp": "2026-08-30T11:23:41.179140Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "13c3c3a1-1f34-43c6-88aa-513df47b12b0",
+    "display_id": "ID-13c3",
+    "activity_type": "Path Enumeration",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five rapid GET requests to sequential /resource/* paths from a single internal IP within the same second, producing one 404 response, suggest a brief path enumeration activity that could be benign (e.g., load test or misconfigured client) or a low\u2011volume reconnaissance attempt.",
+    "timestamp": "2026-08-30T11:23:51.220886Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c3465aa2-2866-4c66-bad5-e282d8f321e8",
+    "display_id": "ID-c346",
+    "activity_type": "Multiple 500 Errors from Single IP",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Four identical GET requests to /api/data from 192.168.1.100 within the same second all returned HTTP 500, resulting in a 100% error rate. The activity could be due to a server-side bug, a misconfigured client or automated health check, rather than an attack.",
+    "timestamp": "2026-08-30T11:24:01.265089Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3e9a3718-164d-4ded-8a9f-878912d1994f",
+    "display_id": "ID-3e9a",
+    "activity_type": "High error rate on repeated GET requests",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five identical GET requests to /api/data from a single IP within the same second produced a 60% error rate (3\u00d7500, 2\u00d7200). The volume is low and the pattern could be a benign load test, misconfigured client, or an internal application fault, but it also matches a minimal DoS or probing attempt. No malicious payload or authentication attempts are evident.",
+    "timestamp": "2026-08-30T11:24:11.308503Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "20f438e1-97ce-42a9-90c9-d7528cba5e91",
+    "display_id": "ID-20f4",
+    "activity_type": "Rapid Path Requests",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five distinct IPs issued GET requests to five different /page/* endpoints within the same second, all returning HTTP 200. The activity matches the rapid path scanning trigger but lacks typical reconnaissance indicators such as 404 responses or known scanner user\u2011agents. The pattern could represent a legitimate distributed load test or health check rather than malicious reconnaissance.",
+    "timestamp": "2026-08-30T11:24:51.380939Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d2e24a00-56d2-4e18-ac25-f09c7e3418c7",
+    "display_id": "ID-d2e2",
+    "activity_type": "Authentication failures",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five HTTP requests from a single IP (185.220.101.42) within a 4\u2011second window resulted in 401 Unauthorized responses for POST /api/login and a 403 Forbidden for GET /admin, indicating repeated authentication failures. The high error rate and short time span raise suspicion of a low\u2011volume brute\u2011force or credential\u2011stuffing attempt, but the limited volume and lack of additional context also allow for legitimate explanations such as a misconfigured client or a user mistyping credentials.",
+    "timestamp": "2026-08-30T12:39:53.714670Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "607b17d5-5e34-4d11-a6df-f0f2bd26a8fc",
+    "display_id": "AUDIT-607b",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T12:41:16.340523Z",
+    "investigation_id": "d2e24a00-56d2-4e18-ac25-f09c7e3418c7",
+    "investigation_display_id": "ID-d2e2",
+    "error": "Groq returned an empty response (no message content)."
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "fa781361-c7f8-4a01-a687-f771103b4d42",
+    "display_id": "AUDIT-fa78",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T12:42:27.971531Z",
+    "investigation_id": "d2e24a00-56d2-4e18-ac25-f09c7e3418c7",
+    "investigation_display_id": "ID-d2e2",
+    "error": "Groq returned an empty response (no message content)."
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "dbc548d9-f987-4dc5-81b9-072b6eb9cdaf",
+    "display_id": "ID-dbc5",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five GET requests from a single internal IP (192.168.1.100) were made to consecutive /resource/* endpoints within the same second, yielding four 200 responses and one 404. The behavior matches a quick path enumeration pattern but the volume and context (internal IP, no suspicious payloads) suggest a benign origin such as a health check or misconfigured client rather than an active reconnaissance attack.",
+    "timestamp": "2026-08-30T12:48:54.681718Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "cc00406c-60d0-4dc4-9a58-6382cd2069b7",
+    "display_id": "ID-cc00",
+    "activity_type": "Rapid Path Enumeration",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five GET requests to sequential /resource/* paths were made from a single internal IP within the same second, producing four 200 responses and one 404. This pattern matches a lightweight path enumeration or health\u2011check activity, but could also represent a low\u2011volume reconnaissance attempt.",
+    "timestamp": "2026-08-30T12:49:04.729757Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "25261af2-ce2d-43ca-93a3-2e287ea42a06",
+    "display_id": "ID-2526",
+    "activity_type": "Rapid Path Enumeration",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five GET requests to sequential /resource/* paths were issued from a single internal IP within the same second, producing a 40% error rate (2/5 404 responses). The pattern matches a quick path scan but could also represent a legitimate internal health check or automated test script. No other suspicious indicators (e.g., POST payloads, unusual user\u2011agents, or repeated failures) are present in the captured window.",
+    "timestamp": "2026-08-30T12:49:14.789890Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "b958d9d4-c16b-4d59-aa92-f7b97d5aa52e",
+    "display_id": "ID-b958",
+    "activity_type": "Repeated 500 Errors from Single IP",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five consecutive GET requests to /api/data from 192.168.1.100 within a 10\u2011second window all returned HTTP 500, indicating a server\u2011side failure triggered by a single source. No evidence of malicious payload or credential attempts is present, suggesting a benign cause such as a misconfigured client, internal health\u2011check, or a transient server bug.",
+    "timestamp": "2026-08-30T12:49:34.850487Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "2a711dcc-adb0-4c16-9d69-641df5dd5c9f",
+    "display_id": "ID-2a71",
+    "activity_type": "Repeated authentication failures",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive POST /api/login requests from a single internal IP (192.168.1.100) all returned 401 within the same second, indicating a rapid series of failed authentication attempts. While the volume is low, the timing and 100% error rate raise suspicion of a brute\u2011force or credential\u2011stuffing attempt, but could also stem from a misconfigured client or automated test.",
+    "timestamp": "2026-08-30T12:49:54.893774Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "61b3e1a8-ca72-429a-be48-127c63b3ddf7",
+    "display_id": "ID-61b3",
+    "activity_type": "Rapid path scanning with 404 responses",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) targeted sequentially numbered config files, all returning 404 within the same second. The pattern suggests a quick reconnaissance attempt for known vulnerable files, but could also be a benign automated check or misconfigured client. No successful access or other malicious indicators were observed.",
+    "timestamp": "2026-08-30T12:50:04.929133Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "ae4f1621-95b4-409b-9a23-15d276a1bfdf",
+    "display_id": "ID-ae4f",
+    "activity_type": "Rapid path scanning of non\u2011existent PHP config files",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) targeted sequential PHP configuration files (/config/5.php to /config/9.php) at the same timestamp, all returning 404. The pattern suggests a quick scan for potentially vulnerable files, but could also be a benign automated process or misconfigured script. No successful requests or other malicious indicators are present in the observed window.",
+    "timestamp": "2026-08-30T12:50:14.973328Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "f1d07d48-cf0f-475f-80b9-a61d826ae2f3",
+    "display_id": "ID-f1d0",
+    "activity_type": "Rapid Internal Path Scan",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five GET requests from internal IP 192.168.1.100 targeted sequential /config/10.php\u201314.php paths, all returning 404 within the same second. The pattern suggests a quick path scan that could be benign internal monitoring or reconnaissance for misconfigured PHP config files, but no successful access or further activity was observed in the captured window.",
+    "timestamp": "2026-08-30T12:50:20.023301Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d3d1d8c1-2ac9-4e2d-afa5-9cac68e45401",
+    "display_id": "ID-d3d1",
+    "activity_type": "Internal Path Enumeration",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) targeted sequential configuration files within the same second, all returning 404. The behavior suggests a rapid path\u2011scanning activity, possibly from an automated scanner or a misconfigured internal service, rather than a direct exploitation attempt.",
+    "timestamp": "2026-08-30T12:50:30.071155Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "6d33346e-5d16-4aa9-afab-62023b9a3597",
+    "display_id": "ID-6d33",
+    "activity_type": "Rapid DELETE path activity",
+    "trigger_reasons": [
+      "rapid path scanning",
+      "unusual HTTP methods"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five DELETE requests to consecutive user endpoints were issued from a single internal IP within the same second, accompanied by a single GET request from another internal IP. All responses returned HTTP 200 with no errors. The pattern could represent an automated cleanup or maintenance script, a misconfigured client, or a malicious attempt to delete user accounts. No authentication context or error responses are present, so the evidence is ambiguous.",
+    "timestamp": "2026-08-30T12:50:50.147154Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "74a35ca6-7d23-493d-988d-97eadca05017",
+    "display_id": "ID-74a3",
+    "activity_type": "Rapid Path Enumeration",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five distinct IP addresses issued GET requests to five sequential page paths within the same second, all returning HTTP 200. The behavior matches a rapid path scanning pattern, but the absence of error responses and the uniform success rate suggest a benign activity such as a load\u2011testing script or internal health check rather than malicious reconnaissance.",
+    "timestamp": "2026-08-30T12:51:00.195976Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "ae1cc8ab-eb37-43ef-8677-deae210260b5",
+    "display_id": "ID-ae1c",
+    "activity_type": "Repeated 500 Errors from Single IP",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Three identical GET requests to /api/data from 192.168.1.100 within the same second all returned HTTP 500, indicating a server-side failure rather than an authentication or credential attack. The volume is low and the error rate is 100%, suggesting a transient issue or a misconfigured client rather than a coordinated malicious effort.",
+    "timestamp": "2026-08-30T12:54:20.584607Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "d120eb58-d7cf-49a9-9136-912571574d20",
+    "display_id": "ID-d120",
+    "activity_type": "High error rate from single IP",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests to /api/data from 192.168.1.100 within a single second produced an 80% HTTP 500 error rate. While the volume is low, the concentrated failures suggest either a server-side issue or a targeted application\u2011layer probe. Multiple explanations are plausible, and further investigation is required to rule out a denial\u2011of\u2011service or malicious fuzzing attempt.",
+    "timestamp": "2026-08-30T12:54:30.651677Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "8684b769-8055-47ce-94ba-593e90de09be",
+    "display_id": "ID-8684",
+    "activity_type": "High-frequency failed login attempts",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Within a one-second window, the IP 192.168.1.100 generated five HTTP requests, three of which returned 401 Unauthorized responses to POST /api/login, while two GET /api/data requests succeeded. The error rate of 60% and the concentration of activity from a single source suggest a potential brute-force or credential\u2011stuffing attempt, but the short time span could also be due to a misconfigured client or automated test.",
+    "timestamp": "2026-08-30T12:54:40.698508Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "dd5e3ef3-6fde-47db-a8d5-7c8911bd4f1b",
+    "display_id": "ID-dd5e",
+    "activity_type": "Multiple failed login attempts and potential reconnaissance of configuration files",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five requests from a single internal IP within the same second resulted in a 100% error rate, including two failed login attempts (401) and three missing configuration file requests (404). The pattern suggests automated activity that could be a brute\u2011force login attempt or reconnaissance scan, but the low volume and single IP also allow for legitimate misconfiguration or internal testing.",
+    "timestamp": "2026-08-30T12:54:50.757325Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "0d4f7baa-5705-4b96-8667-f83c0ff7aa0e",
+    "display_id": "ID-0d4f",
+    "activity_type": "Rapid internal path enumeration",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) to sequential /config/*.php endpoints were made within the same second, all returning 404. The high error rate and rapid request rate suggest automated path scanning, possibly for configuration files that could expose sensitive data. While the activity could be part of a legitimate internal health check or misconfigured script, the pattern aligns with typical reconnaissance behavior used by attackers to locate vulnerable files.",
+    "timestamp": "2026-08-30T12:55:00.805413Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "baf2318a-124b-4c20-8086-52cdc48ac791",
+    "display_id": "ID-baf2",
+    "activity_type": "Path Enumeration Attempt",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) targeted sequential /config/8.php through /config/12.php, all returning 404 within the same second. The high error rate and rapid succession suggest a scanning activity, possibly automated, but could also be a misconfigured client or internal testing tool. No successful access was observed, so the threat level is moderate pending further context.",
+    "timestamp": "2026-08-30T12:55:10.854225Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "8b1323e6-aa63-41b6-9c99-3c4d2aa658ad",
+    "display_id": "ID-8b13",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "pending",
+    "summary": null,
+    "timestamp": "2026-08-30T12:55:20.906181Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "112654f2-2da5-4875-99f7-715aa3a09130",
+    "display_id": "ID-1126",
+    "activity_type": null,
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": null,
+    "status": "pending",
+    "summary": null,
+    "timestamp": "2026-08-30T12:55:30.953275Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "7735b405-af74-4aa0-9ac2-8ebfd7707d18",
+    "display_id": "ID-7735",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning",
+      "unusual HTTP methods"
+    ],
+    "severity": null,
+    "status": "pending",
+    "summary": null,
+    "timestamp": "2026-08-30T12:55:41.009384Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "42821c98-7fc7-4a2f-b978-9b4166c4dd7a",
+    "display_id": "ID-4282",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "pending",
+    "summary": null,
+    "timestamp": "2026-08-30T12:55:51.072998Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "8187aefb-f25e-4628-ad31-ae44e6a348f3",
+    "display_id": "ID-8187",
+    "activity_type": null,
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": null,
+    "status": "pending",
+    "summary": null,
+    "timestamp": "2026-08-30T12:56:01.156512Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "7cd9f7f1-9d2c-4a9a-ab9a-d3d08fb696f9",
+    "display_id": "ID-7cd9",
+    "activity_type": "Multiple authentication failures from single IP",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive failed authentication attempts from IP 185.220.101.42 within a 4\u2011second window, all resulting in 401 or 403 responses. The high error rate and rapid succession raise suspicion of a brute\u2011force or credential\u2011stuffing attempt, but the low volume and short duration also allow for legitimate mis\u2011configuration or user error.",
+    "timestamp": "2026-08-30T12:58:30.037056Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "5be3e10b-6eeb-4a21-9197-deff293b8d88",
+    "display_id": "AUDIT-5be3",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T12:58:46.486599Z",
+    "investigation_id": "7cd9f7f1-9d2c-4a9a-ab9a-d3d08fb696f9",
+    "investigation_display_id": "ID-7cd9",
+    "error": "Audit response parse/validation error: Unterminated string starting at: line 1 column 642 (char 641)"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "e125d40f-84e3-4092-b69a-886d0391ad40",
+    "display_id": "ID-e125",
+    "activity_type": "High error rate on single endpoint",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five consecutive GET requests to /api/data from a single internal IP (192.168.1.100) within a 10\u2011second window all returned HTTP 500, resulting in a 100% error rate. The volume (5 RPS) is low, suggesting a non\u2011DoS scenario. The pattern could be due to a server bug, misconfigured client, or a benign health check, but a malicious application\u2011layer DoS or injection attack that triggers server errors cannot be ruled out.",
+    "timestamp": "2026-08-30T13:04:40.771270Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "c1620aef-7d97-4881-88fb-e38b0c978633",
+    "display_id": "ID-c162",
+    "activity_type": "Repeated authentication failures",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Four consecutive POST /api/login requests from 192.168.1.100 returned HTTP 401 within the same second, indicating a burst of authentication failures. While the volume is below typical brute\u2011force thresholds, the rapid succession and 100% error rate raise suspicion of an automated credential\u2011guessing attempt or a misconfigured client repeatedly retrying login. No additional context (e.g., username diversity or password patterns) is available to confirm malicious intent.",
+    "timestamp": "2026-08-30T13:05:00.829585Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "67e2fb33-ac75-45f9-842a-1f5658ca4cdd",
+    "display_id": "ID-67e2",
+    "activity_type": "Reconnaissance and failed authentication",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five HTTP requests from a single internal IP within the same second resulted in a 401 on a login attempt and four 404 responses for sequential /config/*.php paths, indicating a quick scan for potentially exposed configuration files coupled with an unsuccessful login attempt. The pattern is consistent with automated reconnaissance rather than a sustained brute\u2011force attack.",
+    "timestamp": "2026-08-30T13:05:10.871430Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "aada99f6-cefb-4bd7-b693-8420fc157d5f",
+    "display_id": "ID-aada",
+    "activity_type": "Rapid path scanning with 404 responses",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests to sequential /config/*.php endpoints were issued from a single internal IP (192.168.1.100) within the same second, all returning 404. The behavior matches a quick path\u2011scanning pattern that could indicate an automated vulnerability scan or a misconfigured internal tool, but it could also be a low\u2011impact reconnaissance attempt by an attacker.",
+    "timestamp": "2026-08-30T13:05:20.936994Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "0f90078d-80ff-42c8-b3b3-9f84da7113fb",
+    "display_id": "ID-0f90",
+    "activity_type": "Rapid internal path scanning",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from the internal IP 192.168.1.100 were made within the same second, targeting sequential PHP configuration files that all returned 404. The activity shows a high error rate and rapid request rate, suggesting a scanning attempt for known vulnerable paths. The source IP is internal, so the activity could be a legitimate internal vulnerability scan or a misconfigured script, but it also could be an attacker probing the internal network for exposed configuration files.",
+    "timestamp": "2026-08-30T13:05:30.994280Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "cfc74e5f-9770-4091-ba4d-f835416cc439",
+    "display_id": "ID-cfc7",
+    "activity_type": "Rapid Path Scanning",
+    "trigger_reasons": [
+      "multiple failures from 192.168.1.100",
+      "high error rate",
+      "rapid path scanning"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five identical GET requests from a single internal IP (192.168.1.100) targeted sequential configuration files within the same second, all returning 404. The pattern suggests a quick path\u2011scanning activity, possibly a reconnaissance attempt or an automated internal tool probing for missing configuration files. No successful responses or other suspicious indicators were observed in this short window.",
+    "timestamp": "2026-08-30T13:05:41.052077Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "3007c5b6-2e8f-43ca-a827-af41fc3e8219",
+    "display_id": "ID-3007",
+    "activity_type": "Rapid DELETE requests to user endpoints",
+    "trigger_reasons": [
+      "rapid path scanning",
+      "unusual HTTP methods"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five HTTP requests were observed within the same second, four of which were DELETE requests targeting consecutive user IDs from a single internal IP, followed by a GET request from a different internal IP. All responses returned 200 OK with no errors, indicating the deletions succeeded. While the pattern could represent a legitimate batch cleanup or automated script, the rapid succession and use of DELETE without accompanying authentication context raise a moderate risk of accidental or malicious data removal.",
+    "timestamp": "2026-08-30T13:06:01.121329Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "9809f459-21f4-457f-91d8-893587eaccc9",
+    "display_id": "ID-9809",
+    "activity_type": "Rapid path request burst",
+    "trigger_reasons": [
+      "rapid path scanning"
+    ],
+    "severity": "LOW",
+    "status": "analyzed",
+    "summary": "Five distinct IP addresses issued GET requests to five sequential page paths within the same second, all returning HTTP 200. The pattern matches a benign load\u2011testing or health\u2011check scenario, but could also represent a low\u2011volume reconnaissance scan. No errors or anomalous payloads were observed, and the request rate is well below typical attack thresholds.",
+    "timestamp": "2026-08-30T13:06:11.166857Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "446cfc95-31e5-4db6-8203-5947eaaeb590",
+    "display_id": "AUDIT-446c",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T13:07:33.961765Z",
+    "investigation_id": "7cd9f7f1-9d2c-4a9a-ab9a-d3d08fb696f9",
+    "investigation_display_id": "ID-7cd9",
+    "error": "Groq message.content is empty string (finish_reason='length'). response_type=ChatCompletion | choices_count=1 | finish_reason='length' | content='' | extra_message_fields=['annotations', 'audio', 'function_call', 'model_computed_fields', 'model_config', 'model_extra', 'model_fields', 'model_fields_set', 'refusal', 'tool_calls']"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "2065a913-c5e7-4811-a017-12f78ff21f6a",
+    "display_id": "ID-2065",
+    "activity_type": "Failed authentication attempts",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five HTTP requests from a single IP (185.220.101.42) within a 4\u2011second window resulted in 100% error responses (four 401s on POST /api/login and one 403 on GET /admin). The request pattern is not high\u2011volume but shows repeated failed login attempts followed by an access attempt to an administrative endpoint, which could indicate a low\u2011rate brute\u2011force or credential\u2011stuffing attempt, or simply a user repeatedly entering incorrect credentials. The evidence does not conclusively prove malicious intent, but the combination of authentication failures and an admin\u2011endpoint request warrants further scrutiny.",
+    "timestamp": "2026-08-30T13:13:41.070811Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "1a6eac5d-3d23-4433-9169-0dad2d3cea31",
+    "display_id": "AUDIT-1a6e",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T13:14:01.934489Z",
+    "investigation_id": "2065a913-c5e7-4811-a017-12f78ff21f6a",
+    "investigation_display_id": "ID-2065",
+    "error": "Groq message.content is empty string (finish_reason='length'). response_type=ChatCompletion | choices_count=1 | finish_reason='length' | content='' | extra_message_fields=['annotations', 'audio', 'function_call', 'model_computed_fields', 'model_config', 'model_extra', 'model_fields', 'model_fields_set', 'refusal', 'tool_calls']"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "ec1a8491-d88b-4dad-a40a-f1e60c4224b9",
+    "display_id": "ID-ec1a",
+    "activity_type": "Failed authentication attempts",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive authentication failures from a single IP within a 4\u2011second window, all resulting in 401 or 403 responses, suggest a potential low\u2011volume brute\u2011force or credential\u2011stuffing attempt, but could also be a misconfigured client or a legitimate user repeatedly entering incorrect credentials.",
+    "timestamp": "2026-08-30T13:23:00.412516Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  },
+  {
+    "entry_type": "audit",
+    "internal_id": "66a8c370-e78b-49d3-9e4c-a2addc7d1606",
+    "display_id": "AUDIT-66a8",
+    "activity_type": null,
+    "trigger_reasons": null,
+    "severity": null,
+    "status": "failed",
+    "summary": null,
+    "timestamp": "2026-08-30T13:24:32.123841Z",
+    "investigation_id": "ec1a8491-d88b-4dad-a40a-f1e60c4224b9",
+    "investigation_display_id": "ID-ec1a",
+    "error": "AI audit unavailable: Groq returned an empty response after retry."
+  },
+  {
+    "entry_type": "advanced_ai",
+    "internal_id": "4f3e4c93-9cb9-4359-8944-c51e0fc59a88",
+    "display_id": "AAI-4f3e",
+    "activity_type": "Failed authentication attempts",
+    "trigger_reasons": null,
+    "severity": "MEDIUM",
+    "status": "completed",
+    "summary": "Verdict: INCONCLUSIVE (confidence 20%)",
+    "timestamp": "2026-08-30T13:26:19.263537Z",
+    "investigation_id": "ec1a8491-d88b-4dad-a40a-f1e60c4224b9",
+    "investigation_display_id": "ID-ec1a"
+  },
+  {
+    "entry_type": "soc",
+    "internal_id": "4f8a667b-5254-4e89-8a4c-5dce49ef2a3c",
+    "display_id": "ID-4f8a",
+    "activity_type": "Authentication attempts",
+    "trigger_reasons": [
+      "multiple failures from 185.220.101.42",
+      "high error rate"
+    ],
+    "severity": "MEDIUM",
+    "status": "analyzed",
+    "summary": "Five consecutive authentication failures from a single IP within four seconds, all resulting in 401 or 403 responses, indicate a potential low\u2011volume brute\u2011force or credential\u2011stuffing attempt, but the limited volume and short time span also allow for legitimate mis\u2011typed credentials or a misconfigured client.",
+    "timestamp": "2026-08-30T14:02:41.903740Z",
+    "investigation_id": null,
+    "investigation_display_id": null
+  }
+]
