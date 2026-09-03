@@ -1,13 +1,28 @@
+# Environment / secrets
 .env
+
+# Python
 __pycache__/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.pyc
 *.pyo
 *.pyd
 .Python
 venv/
+.venv/
 env/
 ENV/
+*.egg-info/
+build/
+dist/
+.coverage
+
+# Node (only relevant if a JS toolchain is ever added)
+node_modules/
+
+# Logs / OS / editor noise
 *.log
 .DS_Store
 .idea/

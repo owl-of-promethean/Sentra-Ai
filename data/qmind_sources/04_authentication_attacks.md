@@ -173,7 +173,7 @@ Yellow Flags:
 - Slight geographic deviation (user usually US, now Canada)
 ```
 
-## SOC-AI Feature Extraction
+## Sentra AI Feature Extraction
 
 ### For Each Authentication Event Window
 

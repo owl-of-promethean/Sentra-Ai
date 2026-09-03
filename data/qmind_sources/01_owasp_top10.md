@@ -172,7 +172,7 @@ The OWASP Top 10 represents the most critical web application security risks bas
 - Disable redirect following
 - Network segmentation
 
-## Behavioral Indicators for SOC-AI
+## Behavioral Indicators for Sentra AI
 
 When analyzing logs, look for these patterns:
 

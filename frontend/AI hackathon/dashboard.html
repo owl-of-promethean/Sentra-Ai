@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentra AI</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script>
+    // Apply saved theme before first paint to prevent flash
+    (function(){
+      var t = localStorage.getItem('sentra-theme') || 'dark';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ===================== LOGIN SCREEN ===================== -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🛡️ Sentra <span>AI</span></div>
+    <p class="login-subtitle">Security Operations &amp; Audit Platform</p>
+    <div class="login-form">
+      <div class="login-field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" class="text-input" placeholder="analyst@company.com" autocomplete="off">
+      </div>
+      <div class="login-field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" class="text-input" placeholder="••••••••">
+      </div>
+      <div id="login-error" class="login-error" style="display:none">Invalid credentials. Try admin / password</div>
+      <button id="login-btn" class="primary-btn login-submit-btn">Sign In</button>
+    </div>
+    <p class="login-hint">Demo: admin@sentra.ai / password</p>
+    <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">
+      <a href="index.html" style="color:var(--accent);text-decoration:none">← Back to Sentra AI home</a>
+    </p>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL (hidden until login) ===================== -->
+<div id="app-shell" style="display:none">
+
+<!-- ===================== SIDEBAR ===================== -->
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="logo">🛡️ Sentra <span>AI</span></div>
+    <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle light/dark mode" title="Toggle theme">
+      <span id="theme-toggle-icon">☾</span>
+    </button>
+  </div>
+  <nav>
+    <a href="#" class="nav-item active" id="dashboard-nav">
+      <span class="nav-icon">⊞</span><span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-item" id="live-logs-nav">
+      <span class="nav-icon">📋</span><span>Live Logs</span>
+    </a>
+    <a href="#" class="nav-item" id="soc-nav">
+      <span class="nav-icon">⚡</span><span>SOC</span>
+    </a>
+    <a href="#" class="nav-item" id="audit-nav">
+      <span class="nav-icon">🔍</span><span>Audit</span>
+    </a>
+    <a href="#" class="nav-item" id="ai-copilot-nav">
+      <span class="nav-icon">🤖</span><span>Copilot AI</span>
+    </a>
+    <a href="#" class="nav-item" id="advanced-ai-nav">
+      <span class="nav-icon">⚗</span><span>Advanced AI</span>
+      <span class="beta-badge">BETA</span>
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <button id="logout-btn" class="logout-btn">↩ Sign Out</button>
+  </div>
+</aside>
+
+<!-- ===================== MAIN ===================== -->
+<main class="main-content">
+
+  <!-- ============= DASHBOARD PAGE ============= -->
+  <div id="dashboard-page" class="page active-page">
+    <header class="topbar">
+      <div>
+        <h1>Security Overview</h1>
+        <p>Real-time AI-powered threat monitoring</p>
+      </div>
+      <div class="system-status">
+        <span class="status-dot"></span>
+        System Operational
+      </div>
+    </header>
+
+    <!-- Security Status Card -->
+    <div class="security-status-card">
+      <div class="sec-status-item"><span class="sec-dot green"></span>System Operational</div>
+      <div class="sec-status-item"><span class="sec-dot green"></span>SOC Monitoring: Active</div>
+      <div class="sec-status-item"><span class="sec-dot green"></span>Audit Engine: Ready</div>
+      <div class="sec-status-item"><span class="sec-dot blue"></span>AI: Online</div>
+    </div>
+
+    <!-- Stat Cards -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <p>Events Today</p>
+        <h2>1,284</h2>
+        <span class="stat-description">Total security events received from monitored app today</span>
+        <span class="stat-delta positive">↑ 12.4% from yesterday</span>
+      </div>
+      <div class="stat-card">
+        <p>Threats Detected</p>
+        <h2>17</h2>
+        <span class="stat-description">Events flagged as suspicious by the SOC pipeline</span>
+        <span class="stat-delta positive">↑ 3 new since last hour</span>
+      </div>
+      <div class="stat-card critical-card">
+        <p>Critical Findings</p>
+        <h2 style="color:#ef4444">4</h2>
+        <span class="stat-description">High-confidence threats requiring immediate action</span>
+        <span class="stat-delta negative">Require immediate review</span>
+      </div>
+      <div class="stat-card">
+        <p>Active Investigations</p>
+        <h2>7</h2>
+        <span class="stat-description">Open SOC investigations currently under AI analysis</span>
+        <span class="stat-delta warning">2 nearing SLA deadline</span>
+      </div>
+    </section>
+
+    <!-- Threat chart -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Threat Activity</h2>
+          <p>Security events over selected time range</p>
+        </div>
+        <div class="chart-controls">
+          <select id="dashboard-time-select" class="time-select">
+            <option value="1h">Last Hour</option>
+            <option value="12h">12 Hours</option>
+            <option value="24h" selected>24 Hours</option>
+            <option value="3d">3 Days</option>
+            <option value="5d">5 Days</option>
+            <option value="7d">7 Days</option>
+            <option value="30d">30 Days</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="threatChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Recent Alerts -->
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Recent Alerts</h2>
+          <p>Latest activity detected by Sentra AI</p>
+        </div>
+        <button class="view-all" id="dashboard-view-all">View All</button>
+      </div>
+      <div class="events-table">
+        <div class="event-row event-header">
+          <span>Event</span><span>Source</span><span>Risk</span><span>Confidence</span><span>Time</span>
+        </div>
+        <div id="dashboard-alerts-body"></div>
+      </div>
+    </section>
+
+    <!-- Recent Activity timeline -->
+    <section class="panel">
+      <div class="panel-header"><div><h2>Recent Activity</h2><p>Audit and SOC timeline</p></div></div>
+      <div class="timeline" id="dashboard-timeline"></div>
+    </section>
+  </div>
+
+  <!-- ============= LIVE LOGS PAGE ============= -->
+  <div id="live-logs-page" class="page">
+    <header class="topbar">
+      <div>
+        <h1>Live Logs</h1>
+        <p>Raw incoming security log stream — observation only</p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span id="ll-live-indicator" class="live-status"><span class="live-dot"></span> LIVE</span>
+        <button id="ll-pause-btn" class="secondary-btn" style="font-size:13px;padding:8px 14px">⏸ Pause</button>
+        <button id="ll-export-btn" class="secondary-btn" style="font-size:13px;padding:8px 14px">⬇ Export</button>
+      </div>
+    </header>
+
+    <!-- Filters row -->
+    <div class="panel" style="padding:14px 18px;margin-bottom:16px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:130px">
+          <label style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Event Type</label>
+          <select id="ll-filter-event" class="text-input" style="padding:7px 10px;font-size:13px">
+            <option value="">All</option>
+            <option value="login">Login</option>
+            <option value="api">API</option>
+            <option value="web_request">Web Request</option>
+            <option value="suspicious">Suspicious</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:110px">
+          <label style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Method</label>
+          <select id="ll-filter-method" class="text-input" style="padding:7px 10px;font-size:13px">
+            <option value="">All</option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:100px">
+          <label style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Status</label>
+          <select id="ll-filter-status" class="text-input" style="padding:7px 10px;font-size:13px">
+            <option value="">All</option>
+            <option value="2xx">2xx</option>
+            <option value="3xx">3xx</option>
+            <option value="4xx">4xx</option>
+            <option value="5xx">5xx</option>
+          </select>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:180px">
+          <label style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px">Search</label>
+          <input id="ll-filter-search" type="text" class="text-input" style="padding:7px 10px;font-size:13px" placeholder="IP, path, user agent…">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-self:flex-end">
+          <button id="ll-clear-filters-btn" class="secondary-btn" style="font-size:12px;padding:7px 12px">✕ Clear</button>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:flex-end">
+          <span id="ll-count-badge" class="muted-badge">0 Logs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log table -->
+    <section class="panel" style="padding:0;overflow:hidden">
+      <div class="ll-table-header ll-row">
+        <span>Timestamp</span>
+        <span>Source IP</span>
+        <span>Method</span>
+        <span>Path</span>
+        <span>Status</span>
+        <span>Event Type</span>
+        <span>User Agent</span>
+      </div>
+      <div id="ll-log-body" style="max-height:calc(100vh - 340px);overflow-y:auto"></div>
+      <div id="ll-empty-msg" style="padding:32px;text-align:center;color:#4b5563;font-size:13px;display:none">
+        No logs match the current filters.
+      </div>
+    </section>
+  </div>
+
+  <!-- ============= SOC PAGE ============= -->
+  <div id="soc-page" class="page">
+    <header class="topbar">
+      <div>
+        <h1>SOC — Security Operations</h1>
+        <p>Live security event monitoring and investigation</p>
+      </div>
+      <div class="live-status"><span class="live-dot"></span> LIVE</div>
+    </header>
+
+    <section class="event-controls" id="soc-filters">
+      <button class="filter-button active-filter" data-filter="All">All</button>
+      <button class="filter-button" data-filter="Critical">Critical</button>
+      <button class="filter-button" data-filter="High">High</button>
+      <button class="filter-button" data-filter="Medium">Medium</button>
+      <button class="filter-button" data-filter="Safe">Safe</button>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div><h2>Security Event Stream</h2><p>Monitoring incoming security events</p></div>
+        <span id="soc-event-count" class="muted-badge">0 Events</span>
+      </div>
+      <div class="events-table">
+        <div class="event-row event-header" style="grid-template-columns:2fr 1fr 1.2fr 0.8fr 1.2fr 0.8fr">
+          <span>Event</span><span>Severity</span><span>Source</span><span>Confidence</span><span>Timestamp</span><span>Status</span>
+        </div>
+        <div id="soc-events-body"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============= AUDIT PAGE ============= -->
+  <div id="audit-page" class="page">
+    <header class="topbar">
+      <div><h1>Security Audit</h1><p>AI-powered source code and dependency analysis</p></div>
+    </header>
+
+    <!-- New Audit Scan — authorized application + scope selector (no free-form input) -->
+    <section class="panel audit-scan-panel">
+      <h2 style="margin-bottom:4px;font-size:16px;">New Audit Scan</h2>
+      <p style="color:#6b7280;font-size:12px;margin-bottom:4px;">Only applications registered as authorized targets can be audited.</p>
+      <p style="color:#4b5563;font-size:11px;margin-bottom:16px;">Target scope is restricted to the selected application's approved endpoints and paths. Authorization is ultimately enforced by the backend.</p>
+
+      <!-- Row 1: Application + Scan type + Start -->
+      <div class="audit-scan-row">
+        <select id="audit-app-select" class="text-input app-select">
+          <option value="">— Select authorized application —</option>
+        </select>
+        <div class="scan-type-toggle">
+          <button class="scan-type-btn active-scan" id="quick-scan-btn" data-type="quick">
+            <strong>Quick Scan</strong>
+            <small>Fast · Local knowledge · Rapid analysis</small>
+          </button>
+          <button class="scan-type-btn" id="deep-scan-btn" data-type="deep">
+            <strong>Deep Scan</strong>
+            <small>Comprehensive · Full investigation context · Slower</small>
+          </button>
+        </div>
+        <button class="primary-btn" id="start-audit-btn">▶ Start Audit</button>
+      </div>
+
+      <!-- Row 2: Target Scope — appears after an app is selected -->
+      <div id="audit-scope-row" class="audit-scope-row" style="display:none">
+        <div class="audit-scope-label">Target Scope</div>
+        <select id="audit-scope-select" class="text-input scope-select">
+          <option value="all">Entire Application</option>
+          <option value="endpoint">Specific Endpoint / Path</option>
+        </select>
+        <select id="audit-endpoint-select" class="text-input endpoint-select" style="display:none">
+          <!-- Populated by JS when scope = endpoint -->
+        </select>
+      </div>
+
+      <div id="audit-scan-progress" class="audit-progress" style="display:none">
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="audit-progress-fill"></div></div>
+        <span id="audit-progress-label">Scanning…</span>
+      </div>
+    </section>
+
+    <!-- Audit history -->
+    <section class="panel">
+      <div class="panel-header"><div><h2>Audit History</h2><p>Previous audit results — click any card to view findings</p></div></div>
+      <div id="audit-history-list" class="audit-history-grid"></div>
+    </section>
+  </div>
+
+  <!-- ============= AI COPILOT PAGE ============= -->
+  <div id="ai-copilot-page" class="page">
+    <div class="page-header">
+      <div>
+        <h1>Copilot AI</h1>
+        <p>Context-aware AI assistant — select an investigation or audit to begin</p>
+      </div>
+      <div class="copilot-status"><span class="status-dot"></span> AI Online</div>
+    </div>
+
+    <!-- No-context warning banner -->
+    <div id="copilot-no-context-banner" style="
+      background:var(--warning-bg);border:1px solid var(--warning-border);
+      border-radius:8px;padding:14px 18px;margin-bottom:16px;
+      font-size:13px;color:var(--warning);display:block">
+      ⚠ <strong>No security context selected.</strong>
+      Open an investigation from the <strong>SOC</strong> page or an audit from the <strong>Audit</strong> page,
+      then click <em>"Ask AI Copilot"</em> to load context here.
+      Copilot only answers questions about the loaded Sentra security object.
+    </div>
+
+    <div class="copilot-container">
+      <!-- Chat -->
+      <div class="copilot-chat">
+        <div class="copilot-chat-header">
+          <div class="copilot-avatar">🤖</div>
+          <div>
+            <strong>Sentra AI Copilot</strong>
+            <span>Powered by Groq · Sentra security context only</span>
+          </div>
+        </div>
+        <div id="copilot-messages" class="copilot-messages">
+          <div class="chat-message ai-message">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+              <strong>Sentra AI</strong>
+              <p>I'm Sentra Copilot. Select an investigation or audit from the SOC or Audit page, then bring the context here using the "Ask AI Copilot" button. I answer questions only about selected Sentra security objects — not general questions.</p>
+            </div>
+          </div>
+        </div>
+        <div class="copilot-input-area">
+          <input id="copilot-input" type="text" placeholder="Select a security context first, then ask your question…">
+          <button id="copilot-send">Send</button>
+        </div>
+      </div>
+      <!-- Sidebar -->
+      <div class="copilot-sidebar">
+        <div class="copilot-card" id="copilot-context-card" style="display:none">
+          <h3>Current Context</h3>
+          <div id="copilot-context-body"></div>
+        </div>
+        <div class="copilot-card">
+          <h3>Quick Actions</h3>
+          <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Requires a context to be loaded</p>
+          <button class="quick-action" data-action="analyze-event">Analyze this event</button>
+          <button class="quick-action" data-action="explain-finding">Explain the finding</button>
+          <button class="quick-action" data-action="summarize">Summarize investigation</button>
+          <button class="quick-action" data-action="explain-cwe">Explain vulnerabilities</button>
+          <button class="quick-action" data-action="review-audit">Review audit findings</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= ADVANCED AI BETA PAGE ============= -->
+  <div id="advanced-ai-page" class="page">
+    <header class="topbar">
+      <div>
+        <h1>Advanced AI <span class="beta-badge">BETA</span></h1>
+        <p>Isolated AI-driven remediation — experimental feature</p>
+      </div>
+    </header>
+
+    <div class="beta-warning-banner">
+      ⚠ ISOLATED SANDBOX — Changes are tested in isolation. Production is unchanged until a human explicitly approves each fix.
+    </div>
+
+    <!-- Active sandbox jobs -->
+    <section class="panel">
+      <div class="panel-header">
+        <div><h2>Remediation Queue</h2><p>AI sandbox jobs — prioritised Critical → High → Medium → Low</p></div>
+        <button class="secondary-btn" id="new-sandbox-btn" style="font-size:13px;padding:8px 14px">+ New Job</button>
+      </div>
+      <div id="sandbox-jobs-list"></div>
+    </section>
+
+    <!-- Sandbox detail (shown when a job is selected) -->
+    <div id="sandbox-detail" style="display:none">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2 id="sandbox-detail-title">Sandbox Job</h2>
+            <p id="sandbox-detail-subtitle"></p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="secondary-btn" id="sandbox-cancel-btn" style="display:none;font-size:12px;padding:6px 12px">✖ Cancel Job</button>
+            <button class="close-x-btn" id="sandbox-detail-close">✕</button>
+          </div>
+        </div>
+
+        <!-- Workflow steps -->
+        <div class="sandbox-steps" id="sandbox-steps-row">
+          <div class="sandbox-step" data-step="0"><div class="step-num">①</div><div class="step-label">Finding<br>Selected</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="1"><div class="step-num">②</div><div class="step-label">Sandbox<br>Created</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="2"><div class="step-num">③</div><div class="step-label">Surface<br>Discovered</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="3"><div class="step-num">④</div><div class="step-label">Evidence<br>Analyzed</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="4"><div class="step-num">⑤</div><div class="step-label">Plan<br>Generated</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="5"><div class="step-num">⑥</div><div class="step-label">Validation</div></div>
+          <div class="step-connector"></div>
+          <div class="sandbox-step" data-step="6"><div class="step-num">⑦</div><div class="step-label">Result</div></div>
+        </div>
+
+        <!-- Code diff -->
+        <div id="sandbox-diff-view" style="display:none">
+          <h3 style="font-size:14px;margin:20px 0 10px 0">Proposed Code Fix</h3>
+          <div class="diff-container">
+            <div class="diff-col">
+              <div class="diff-header diff-header-old">ORIGINAL</div>
+              <pre class="diff-pre" id="diff-original"></pre>
+            </div>
+            <div class="diff-col">
+              <div class="diff-header diff-header-new">MODIFIED</div>
+              <pre class="diff-pre" id="diff-modified"></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security tests -->
+        <div id="sandbox-tests-view" style="display:none">
+          <h3 style="font-size:14px;margin:20px 0 10px 0">Security Validation</h3>
+          <div id="sandbox-tests-list" class="tests-list"></div>
+        </div>
+
+        <!-- Validation report (real Advanced AI jobs) -->
+        <div id="sandbox-report-view" style="display:none">
+          <h3 style="font-size:14px;margin:20px 0 10px 0">Validation Report</h3>
+          <div id="sandbox-report-grid"></div>
+          <h4 style="font-size:12px;margin:16px 0 6px 0;color:#9ca3af">REASONING</h4>
+          <p id="sandbox-report-reasoning" style="font-size:13px;line-height:1.6"></p>
+          <h4 style="font-size:12px;margin:16px 0 6px 0;color:#9ca3af">REMEDIATION</h4>
+          <p id="sandbox-report-remediation" style="font-size:13px;line-height:1.6"></p>
+        </div>
+
+        <!-- Approval area -->
+        <div id="sandbox-approval-area" style="display:none">
+          <div class="approval-warning">
+            ⚠ Human review required. This fix has NOT been applied to any environment.
+            Review the Original / Modified code diff above before making a decision.
+            Production remains unchanged until you explicitly approve.
+          </div>
+          <div class="approval-buttons">
+            <button class="btn-approve" id="sandbox-approve-btn">✔ Accept Fix</button>
+            <button class="btn-reject" id="sandbox-reject-btn">✖ Reject Fix</button>
+          </div>
+          <div id="approval-confirm-area" style="display:none" class="approval-confirm-panel">
+            <p id="approval-confirm-text">Are you sure?</p>
+            <div class="approval-buttons">
+              <button class="btn-approve" id="confirm-approval-yes">Confirm</button>
+              <button class="btn-review" id="confirm-approval-no">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Failed state -->
+        <div id="sandbox-failed-area" style="display:none">
+          <div class="failed-banner">✖ Fix generation failed. The sandbox could not produce a safe fix.</div>
+          <div class="approval-buttons">
+            <button class="btn-review" id="sandbox-retry-btn">↺ Retry</button>
+            <button class="btn-reject" id="sandbox-discard-btn">✖ Discard Sandbox</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</main>
+
+</div><!-- /#app-shell -->
+
+<!-- ===================== NEW JOB MODAL ===================== -->
+<div id="new-job-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <span class="modal-label">ADVANCED AI BETA</span>
+        <h2>New Sandbox Job</h2>
+      </div>
+      <button class="close-button modal-close" data-modal="new-job-modal">✕</button>
+    </div>
+    <p style="color:#9ca3af;font-size:13px;margin-bottom:18px;">
+      Select an existing audit to create a remediation sandbox job. The AI will analyze findings, propose fixes, and validate them in an isolated environment. No production changes occur without explicit human approval.
+    </p>
+    <div id="new-job-audit-list" class="new-job-audit-list"></div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #1f2937">
+      <p style="font-size:11px;color:#4b5563;">No audit available? Run a scan from the <strong style="color:#9ca3af">Audit</strong> page first.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SOC EVENT MODAL ===================== -->
+<div id="soc-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <span class="modal-label">SECURITY EVENT</span>
+        <h2 id="soc-modal-title"></h2>
+        <span id="soc-modal-severity" class="severity-badge"></span>
+      </div>
+      <button class="close-button modal-close" data-modal="soc-modal">✕</button>
+    </div>
+    <div class="incident-info-grid">
+      <div class="incident-info-card"><span>Investigation ID</span><strong id="soc-modal-id"></strong></div>
+      <div class="incident-info-card"><span>Timestamp</span><strong id="soc-modal-time"></strong></div>
+      <div class="incident-info-card"><span>Source IP</span><strong id="soc-modal-source"></strong></div>
+      <div class="incident-info-card"><span>Target Endpoint</span><strong id="soc-modal-target"></strong></div>
+      <div class="incident-info-card"><span>Confidence</span><strong id="soc-modal-confidence"></strong></div>
+      <div class="incident-info-card"><span>Trigger Score</span><strong id="soc-modal-risk"></strong></div>
+    </div>
+    <div class="incident-section">
+      <h3>🤖 AI Analysis</h3>
+      <p id="soc-modal-analysis"></p>
+    </div>
+    <div class="incident-section">
+      <h3>Recommended Actions</h3>
+      <ul id="soc-modal-actions"></ul>
+    </div>
+    <div class="incident-section">
+      <button class="raw-log-toggle" id="soc-raw-toggle">▶ View Raw Logs</button>
+      <div id="soc-raw-log-panel" class="raw-log-panel" style="display:none">
+        <div class="raw-log-label">RAW LOG EVIDENCE</div>
+        <pre id="soc-raw-log-content" class="raw-log-pre"></pre>
+      </div>
+    </div>
+    <div class="incident-footer">
+      <button class="ai-button" id="soc-to-copilot">🤖 Ask AI Copilot</button>
+      <button class="secondary-btn" id="soc-to-audit" style="font-size:13px;padding:9px 16px">🔍 Start Audit</button>
+      <button class="secondary-btn" id="soc-to-advanced-ai" style="font-size:13px;padding:9px 16px">⚗ Validate with Advanced AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== AUDIT RESULT MODAL ===================== -->
+<div id="audit-modal" class="modal-overlay">
+  <div class="modal-box modal-box-wide">
+    <div class="modal-header">
+      <div>
+        <span class="modal-label">AUDIT RESULT</span>
+        <h2 id="audit-modal-title"></h2>
+      </div>
+      <button class="close-button modal-close" data-modal="audit-modal">✕</button>
+    </div>
+    <!-- Overview grid -->
+    <div class="audit-overview-grid" id="audit-modal-overview"></div>
+    <!-- Findings -->
+    <div class="incident-section">
+      <h3>Findings</h3>
+      <div id="audit-modal-findings"></div>
+    </div>
+    <!-- Whole-audit → Beta button -->
+    <div class="audit-modal-footer">
+      <button class="send-audit-to-beta-btn" id="audit-to-beta-btn">
+        ⚗ Send Audit to Advanced AI Beta
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LIVE LOGS EXPORT MODAL ===================== -->
+<div id="ll-export-modal" class="modal-overlay">
+  <div class="modal-box" style="width:min(520px,100%)">
+    <div class="modal-header">
+      <div>
+        <span class="modal-label">LIVE LOGS</span>
+        <h2>Export Logs</h2>
+      </div>
+      <button class="close-button modal-close" data-modal="ll-export-modal">✕</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <!-- Timeframe -->
+      <div>
+        <label style="display:block;font-size:12px;color:#9ca3af;margin-bottom:8px">Timeframe</label>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="ll-export-preset-btns">
+            <button class="ll-export-preset active-filter" data-preset="15m" style="padding:6px 12px;font-size:13px;border-radius:6px;cursor:pointer;border:1px solid #1f2937">Last 15 min</button>
+            <button class="ll-export-preset filter-button" data-preset="1h"  style="padding:6px 12px;font-size:13px;border-radius:6px;cursor:pointer">Last 1 hour</button>
+            <button class="ll-export-preset filter-button" data-preset="6h"  style="padding:6px 12px;font-size:13px;border-radius:6px;cursor:pointer">Last 6 hours</button>
+            <button class="ll-export-preset filter-button" data-preset="24h" style="padding:6px 12px;font-size:13px;border-radius:6px;cursor:pointer">Last 24 hours</button>
+            <button class="ll-export-preset filter-button" data-preset="custom" style="padding:6px 12px;font-size:13px;border-radius:6px;cursor:pointer">Custom</button>
+          </div>
+          <div id="ll-export-custom-range" style="display:none;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <label style="font-size:11px;color:#6b7280">From</label>
+              <input id="ll-export-from" type="datetime-local" class="text-input" style="padding:7px 10px;font-size:13px">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <label style="font-size:11px;color:#6b7280">To</label>
+              <input id="ll-export-to" type="datetime-local" class="text-input" style="padding:7px 10px;font-size:13px">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active filters note -->
+      <div id="ll-export-filter-note" style="background:#0f172a;border:1px solid #1f2937;border-radius:7px;padding:10px 14px;font-size:12px;color:#9ca3af"></div>
+
+      <!-- Format -->
+      <div>
+        <label style="display:block;font-size:12px;color:#9ca3af;margin-bottom:8px">Format</label>
+        <div style="display:flex;gap:16px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#d1d5db">
+            <input type="radio" name="ll-export-fmt" value="json" checked style="accent-color:#2563eb"> JSON
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:#d1d5db">
+            <input type="radio" name="ll-export-fmt" value="csv" style="accent-color:#2563eb"> CSV
+          </label>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #1f2937;padding-top:16px">
+        <button class="secondary-btn modal-close" data-modal="ll-export-modal">Cancel</button>
+        <button id="ll-export-confirm-btn" class="primary-btn">⬇ Download</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

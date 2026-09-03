@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentra AI — Security Operations &amp; Audit Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <script>(function(){var t=localStorage.getItem('sentra-theme')||'dark';document.documentElement.dataset.theme=t;}());</script>
+  <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text-primary);font-size:14px;line-height:1.6;overflow-x:hidden;}
+
+/* ── SITE NAVBAR ── */
+.site-navbar{position:fixed;top:0;left:0;right:0;width:100%;z-index:1000;background:transparent;border-bottom:1px solid transparent;transition:background .3s,border-color .3s,box-shadow .3s;}
+.site-navbar.scrolled{background:rgba(11,15,20,.96);border-bottom-color:rgba(30,40,54,.8);box-shadow:0 1px 24px rgba(0,0,0,.3);}
+[data-theme="light"] .site-navbar.scrolled{background:rgba(242,244,247,.92);border-bottom-color:var(--border);}
+.navbar-inner{width:min(1200px,calc(100% - 48px));margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:56px;}
+.navbar-logo{justify-self:start;font-size:15px;font-weight:700;letter-spacing:-.3px;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.navbar-logo-mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.navbar-logo-mark svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.navbar-logo-text{color:var(--text-primary);}
+.navbar-logo-text span{color:var(--accent);}
+.navbar-links{justify-self:center;display:flex;align-items:center;gap:1px;}
+.navbar-links button{padding:5px 13px;border-radius:6px;font-size:13px;font-weight:500;color:var(--text-secondary);background:none;border:none;cursor:pointer;transition:color .15s,background .15s;white-space:nowrap;}
+.navbar-links button:hover{color:var(--text-primary);background:rgba(255,255,255,.06);}
+[data-theme="light"] .navbar-links button:hover{background:rgba(0,0,0,.05);}
+.navbar-actions{justify-self:end;display:flex;align-items:center;gap:8px;}
+.navbar-theme-btn{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:5px 7px;border-radius:6px;transition:color .15s,background .15s;line-height:1;flex-shrink:0;}
+.navbar-theme-btn:hover{color:var(--text-primary);background:rgba(255,255,255,.06);}
+.navbar-signin{padding:5px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:500;text-decoration:none;transition:color .15s,border-color .15s;white-space:nowrap;}
+.navbar-signin:hover{color:var(--text-primary);border-color:var(--text-secondary);}
+.navbar-cta{padding:6px 16px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;transition:background .15s,opacity .15s;white-space:nowrap;cursor:pointer;}
+.navbar-cta:hover{background:var(--accent-hover);}
+
+/* ── BACKGROUND CANVAS ── static CSS dot-grid + one transform-only blob */
+#lp-bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;background-image:radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1.4px);background-size:34px 34px;}
+[data-theme="light"] #lp-bg-canvas{background-image:radial-gradient(circle,rgba(0,0,30,.07) 1px,transparent 1.4px);}
+#lp-blob{--lp-blob-rgb:59,125,216;position:absolute;left:0;top:0;width:120vmax;height:120vmax;border-radius:50%;will-change:transform;background:radial-gradient(circle,rgba(var(--lp-blob-rgb),.06) 0%,rgba(var(--lp-blob-rgb),0) 62%);}
+[data-theme="light"] #lp-blob{background:radial-gradient(circle,rgba(var(--lp-blob-rgb),.045) 0%,rgba(var(--lp-blob-rgb),0) 62%);}
+#lp-blob[data-scene="2"]{--lp-blob-rgb:251,146,60;}
+#lp-blob[data-scene="3"]{--lp-blob-rgb:251,191,36;}
+#lp-blob[data-scene="5"]{--lp-blob-rgb:139,92,246;}
+
+/* ── PROGRESS BAR ── scaleX so it never triggers layout */
+.lp-progress-bar{position:fixed;top:56px;left:0;height:2px;width:100%;background:var(--accent);z-index:1001;transform:scaleX(0);transform-origin:0 50%;will-change:transform;}
+
+/* ── STORY WRAPPER ── */
+.lp-story{padding-top:56px;position:relative;z-index:1;}
+.scene,.s6-section{scroll-margin-top:56px;}
+
+/* ── SCENE SYSTEM ── */
+.scene{position:relative;}
+.scene-track{height:300vh;}
+.scene-panel{position:sticky;top:56px;height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 24px;}
+
+/* ── CHAPTER DOTS ── */
+.scroll-chapters{position:fixed;left:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100;}
+.scroll-ch-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background .25s,transform .25s;cursor:pointer;}
+.scroll-ch-dot:hover{background:var(--text-muted);}
+.scroll-ch-dot.active{background:var(--accent);transform:scale(1.6);}
+
+/* ── SCENE 0 — HERO ── */
+.s0-panel{gap:64px;max-width:1100px;width:100%;margin:0 auto;}
+.s0-left{flex:0 0 auto;max-width:480px;display:flex;flex-direction:column;gap:0;}
+.s0-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:20px;padding:4px 14px;margin-bottom:22px;width:fit-content;}
+.s0-title{font-size:clamp(34px,5.5vw,62px);font-weight:800;letter-spacing:-2.5px;line-height:1.04;margin-bottom:18px;color:var(--text-primary);}
+.s0-title span{color:var(--accent);}
+.s0-sub{font-size:clamp(14px,1.5vw,16px);color:var(--text-secondary);line-height:1.75;max-width:420px;margin-bottom:32px;}
+.s0-cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.s0-cta a,.s0-cta button{padding:11px 24px;border-radius:7px;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s,border-color .15s,opacity .15s;display:inline-flex;align-items:center;gap:8px;}
+.s0-cta-primary{background:var(--accent);color:#fff;border:none;}
+.s0-cta-primary:hover{background:var(--accent-hover);}
+.s0-cta-secondary{background:transparent;color:var(--text-primary);border:1px solid var(--border);}
+.s0-cta-secondary:hover{border-color:var(--text-secondary);}
+.s0-status-row{display:flex;gap:20px;flex-wrap:wrap;}
+.s0-status-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sdot-green{background:var(--success);}
+.sdot-blue{background:var(--accent);}
+/* Hero right — terminal */
+.s0-right{flex:1;max-width:460px;min-width:0;opacity:0;transform:translateX(32px);}
+
+/* ── TERMINAL WINDOW (shared) ── */
+.term-win{background:var(--surface-3);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 24px 56px rgba(0,0,0,.45);}
+.term-bar{background:var(--surface-2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.term-dots{display:flex;gap:5px;}
+.term-dot{width:10px;height:10px;border-radius:50%;}
+.term-dot-r{background:#f87171;}.term-dot-y{background:#fbbf24;}.term-dot-g{background:var(--success);}
+.term-title{font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;}
+.term-body{padding:14px 16px;font-size:12px;}
+
+/* Hero terminal content */
+.hero-term-body{font-family:"Cascadia Code","Consolas",monospace;font-size:11.5px;line-height:1.75;padding:14px 16px;display:flex;flex-direction:column;gap:0;}
+.htl{display:flex;gap:10px;align-items:flex-start;opacity:0;transform:translateX(8px);transition:opacity .3s,transform .3s;}
+.htl.vis{opacity:1;transform:none;}
+.htl-time{color:var(--text-muted);flex-shrink:0;font-size:10.5px;padding-top:1px;}
+.htl-content{flex:1;color:var(--text-secondary);}
+.htl-content .hl-danger{color:var(--danger);font-weight:600;}
+.htl-content .hl-warn{color:var(--warning);font-weight:600;}
+.htl-content .hl-ok{color:var(--success);font-weight:600;}
+.htl-content .hl-acc{color:var(--accent);font-weight:600;}
+.hero-term-cursor{display:inline-block;width:7px;height:13px;background:var(--accent);border-radius:1px;animation:blink-cur .9s step-end infinite;vertical-align:text-bottom;margin-left:2px;}
+@keyframes blink-cur{50%{opacity:0;}}
+
+/* ── SCENE 1 — LIVE LOGS ── */
+.s1-panel{gap:48px;max-width:1060px;width:100%;margin:0 auto;}
+.s1-left{flex:1;max-width:340px;display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateX(-24px);}
+.s1-eyebrow{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);}
+.s1-title{font-size:clamp(22px,3vw,36px);font-weight:700;letter-spacing:-1px;line-height:1.15;}
+.s1-body{font-size:13.5px;color:var(--text-secondary);line-height:1.7;}
+.s1-pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--text-secondary);width:fit-content;}
+.live-dot-anim{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse-dot 1.4s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.s1-right{flex:1;max-width:540px;opacity:0;transform:translateX(32px);}
+.log-table{width:100%;}
+.log-header-row{display:grid;grid-template-columns:76px 108px 48px 1fr 48px 86px;padding:6px 8px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);}
+.log-row{display:grid;grid-template-columns:76px 108px 48px 1fr 48px 86px;padding:5px 8px;border-bottom:1px solid var(--border-subtle);font-size:11px;font-family:"Cascadia Code","Consolas",monospace;color:var(--text-secondary);transition:background .25s,color .25s;}
+.log-row.suspicious{background:rgba(248,113,113,.07);color:var(--text-primary);}
+.log-row.suspicious .log-status{color:var(--danger);font-weight:700;}
+.log-row.highlight-row{background:rgba(59,125,216,.1);outline:1px solid var(--accent-border);color:var(--text-primary);}
+.log-cell{padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.log-method{font-weight:700;}
+.log-method.GET{color:var(--success);}.log-method.POST{color:var(--accent);}.log-method.DELETE{color:var(--danger);}.log-method.PUT{color:var(--warning);}
+.log-status.s2{color:var(--success);}.log-status.s4{color:var(--warning);}.log-status.s5{color:var(--danger);}
+.log-etype{font-size:10px;}
+.log-etype.suspicious{color:var(--danger);font-weight:700;}.log-etype.login{color:var(--warning);}.log-etype.api{color:var(--text-muted);}
+@keyframes logSlideIn{from{opacity:0;transform:translateX(8px);}to{opacity:1;transform:none;}}
+.log-row.entering{animation:logSlideIn .18s ease forwards;}
+
+/* ── SCENE 2 — SOC ── */
+.s2-panel{flex-direction:column;gap:18px;max-width:820px;margin:0 auto;width:100%;}
+.s2-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--orange);align-self:flex-start;opacity:0;transition:opacity .3s;}
+.soc-card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:100%;opacity:0;transform:translateY(28px);transition:opacity .5s,transform .5s,border-color .4s;}
+.soc-card-header{background:var(--surface-2);padding:11px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.soc-card-id{font-family:monospace;font-size:11px;color:var(--text-muted);letter-spacing:.5px;}
+.sev-badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+.sev-critical{background:rgba(248,113,113,.12);color:var(--danger);border:1px solid rgba(248,113,113,.3);}
+.sev-high{background:rgba(251,146,60,.10);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.sev-medium{background:rgba(251,191,36,.10);color:var(--warning);border:1px solid rgba(251,191,36,.3);}
+.soc-card-title{font-size:14px;font-weight:700;}
+.soc-meta-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);}
+.soc-meta-cell{background:var(--surface-1);padding:10px 14px;}
+.soc-meta-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;}
+.soc-meta-val{font-size:13px;font-weight:600;font-family:monospace;}
+.soc-analysis-row{padding:13px 18px;border-top:1px solid var(--border);}
+.soc-analysis-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.soc-analysis-text{font-size:13px;color:var(--text-secondary);line-height:1.6;}
+.soc-raw-logs{padding:9px 18px;border-top:1px solid var(--border);font-family:monospace;font-size:11px;color:var(--text-muted);background:var(--surface-3);}
+.soc-raw-logs span.hl{color:var(--danger);font-weight:600;}
+.trigger-score-row{padding:10px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.trigger-label{font-size:11px;color:var(--text-muted);white-space:nowrap;}
+.trigger-bar-track{flex:1;height:4px;background:var(--border);border-radius:3px;overflow:hidden;}
+.trigger-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--warning),var(--danger));width:100%;transform:scaleX(0);transform-origin:0 50%;will-change:transform;}
+.trigger-val{font-size:12px;font-weight:700;color:var(--danger);min-width:40px;text-align:right;}
+
+/* ── SCENE 3 — CODE AUDIT ── */
+.s3-panel{gap:32px;max-width:1020px;width:100%;margin:0 auto;}
+.s3-left{flex:1;max-width:400px;opacity:0;transform:translateX(-24px);}
+.s3-right{flex:1;max-width:440px;display:flex;flex-direction:column;gap:12px;opacity:0;transform:translateX(24px);}
+.code-win .term-body{font-family:"Cascadia Code","Consolas",monospace;font-size:11.5px;line-height:1.75;padding:12px 16px;}
+.code-line{display:flex;gap:12px;padding:1px 0;}
+.code-ln{color:var(--text-muted);font-size:10px;user-select:none;min-width:18px;text-align:right;flex-shrink:0;padding-top:2px;}
+.code-text{flex:1;}
+.kw{color:#7dd3fc;}.str{color:#86efac;}.cmt{color:var(--text-muted);font-style:italic;}.fn{color:#c4b5fd;}.var{color:var(--text-primary);}.op{color:var(--text-secondary);}
+.code-line.vuln-line{background:rgba(248,113,113,.1);border-left:2px solid var(--danger);padding-left:4px;margin:0 -16px;padding-right:0;position:relative;transition:background .3s;}
+.vuln-badge{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;background:rgba(248,113,113,.18);color:var(--danger);border:1px solid rgba(248,113,113,.3);border-radius:3px;padding:1px 5px;letter-spacing:.5px;pointer-events:none;opacity:0;transition:opacity .3s;}
+.code-line.vuln-line.active .vuln-badge{opacity:1;}
+.finding-panel{background:var(--surface-1);border:1px solid var(--border);border-radius:8px;overflow:hidden;opacity:0;transform:translateY(14px);transition:transform .4s,opacity .4s;}
+.finding-panel.visible{transform:none;opacity:1;}
+.finding-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--surface-2);}
+.finding-title-text{font-size:13px;font-weight:700;}
+.finding-body{padding:12px 14px;display:flex;flex-direction:column;gap:8px;}
+.finding-row{display:flex;gap:8px;align-items:flex-start;font-size:12px;}
+.finding-key{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);min-width:72px;flex-shrink:0;padding-top:2px;}
+.finding-val{color:var(--text-secondary);line-height:1.5;}
+.finding-evidence{font-family:monospace;font-size:11px;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:6px 10px;color:var(--danger);line-height:1.5;}
+.finding-fix{font-family:monospace;font-size:11px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);border-radius:4px;padding:6px 10px;color:var(--success);line-height:1.5;}
+
+/* ── SCENE 4 — COPILOT ── */
+.s4-panel{gap:40px;max-width:1020px;width:100%;margin:0 auto;}
+.s4-left{flex:1;max-width:330px;display:flex;flex-direction:column;gap:14px;opacity:0;transform:translateX(-20px);}
+.s4-right{flex:1;max-width:480px;opacity:0;transform:translateX(20px);}
+.chat-win .term-body{padding:14px;display:flex;flex-direction:column;gap:12px;}
+.chat-context-strip{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:11px;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:8px;}
+.ctx-tag{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--accent);border-radius:4px;padding:1px 7px;font-size:10px;font-weight:600;letter-spacing:.3px;}
+.chat-msg{display:flex;flex-direction:column;gap:3px;font-size:12px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;}
+.chat-msg.visible{opacity:1;transform:none;}
+.chat-msg-role{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.chat-msg-role.analyst{color:var(--text-muted);}.chat-msg-role.copilot{color:var(--accent);}
+.chat-msg-bubble{border-radius:7px;padding:9px 12px;line-height:1.55;}
+.chat-msg.analyst .chat-msg-bubble{background:var(--surface-2);border:1px solid var(--border);color:var(--text-primary);align-self:flex-end;max-width:88%;}
+.chat-msg.copilot .chat-msg-bubble{background:var(--accent-bg);border:1px solid var(--accent-border);color:var(--text-secondary);align-self:flex-start;max-width:94%;}
+@keyframes blink{50%{opacity:0;}}
+
+/* ── SCENE 5 — ADVANCED AI BETA ── */
+.s5-panel{gap:48px;max-width:1060px;width:100%;margin:0 auto;}
+.s5-left{flex:1;max-width:380px;display:flex;flex-direction:column;gap:16px;opacity:0;transform:translateX(-20px);}
+.s5-right{flex:1;max-width:480px;opacity:0;transform:translateX(20px);}
+.beta-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#a78bfa;width:fit-content;}
+.s5-scene-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#a78bfa;}
+.s5-h2{font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.2;}
+.s5-body{font-size:13.5px;color:var(--text-secondary);line-height:1.7;}
+.s5-stage-indicator{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.s5-stage{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-muted);transition:color .3s,opacity .3s;opacity:.4;}
+.s5-stage.active{color:var(--text-primary);opacity:1;}
+.s5-stage.done{color:var(--success);opacity:.8;}
+.s5-stage-num{width:20px;height:20px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;transition:background .3s,border-color .3s,color .3s;}
+.s5-stage.active .s5-stage-num{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.4);color:#a78bfa;}
+.s5-stage.done .s5-stage-num{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:var(--success);}
+.sandbox-win{background:var(--surface-3);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 24px 56px rgba(0,0,0,.45);}
+.sandbox-header{background:var(--surface-2);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.sandbox-header-dots{display:flex;gap:5px;}
+.sandbox-header-dot{width:10px;height:10px;border-radius:50%;}
+.sandbox-header-dot-r{background:#f87171;}.sandbox-header-dot-y{background:#fbbf24;}.sandbox-header-dot-g{background:var(--success);}
+.sandbox-header-title{font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;}
+.sandbox-header-badge{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.5px;color:#a78bfa;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:4px;padding:2px 8px;}
+.sandbox-body{padding:14px 16px;display:flex;flex-direction:column;gap:10px;}
+.sandbox-target-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;}
+.sandbox-target-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);flex-shrink:0;}
+.sandbox-target-val{font-size:12px;font-weight:600;font-family:monospace;color:var(--text-primary);}
+.sandbox-status-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);}
+.sandbox-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background .4s;}
+.sandbox-status-dot.idle{background:var(--border);}.sandbox-status-dot.running{background:#a78bfa;animation:pulse-dot 1.2s ease-in-out infinite;}.sandbox-status-dot.done{background:var(--success);}
+.sandbox-status-text{transition:color .3s;}
+.sandbox-checks{display:flex;flex-direction:column;gap:4px;}
+.sandbox-check{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-size:12px;background:var(--surface-2);border:1px solid var(--border);opacity:0;transform:translateX(12px);transition:opacity .25s,transform .25s,border-color .3s,background .3s;}
+.sandbox-check.visible{opacity:1;transform:none;}
+.sandbox-check.testing{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.05);}
+.sandbox-check.pass{border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.04);}
+.sandbox-check.confirmed{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05);}
+.sandbox-check-name{flex:1;font-weight:500;color:var(--text-primary);}
+.sandbox-check-status{font-size:10px;font-weight:700;letter-spacing:.3px;min-width:52px;text-align:right;}
+.sandbox-check.testing .sandbox-check-status{color:#a78bfa;}
+.sandbox-check.pass .sandbox-check-status{color:var(--success);}
+.sandbox-check.confirmed .sandbox-check-status{color:var(--danger);}
+.sandbox-result{padding:10px 12px;border-radius:6px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);font-size:12px;color:var(--success);display:flex;align-items:center;gap:8px;opacity:0;transition:opacity .4s;}
+.sandbox-result.visible{opacity:1;}
+.sandbox-result-icon{font-size:14px;flex-shrink:0;}
+
+/* ── SCENE 6 — PIPELINE / CTA ── */
+.s6-section{padding:100px 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:60px;position:relative;z-index:1;}
+.s6-label{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);}
+.s6-title{font-size:clamp(26px,4vw,44px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;max-width:580px;}
+.s6-title span{color:var(--accent);}
+.pipeline{display:flex;align-items:center;flex-wrap:wrap;justify-content:center;max-width:940px;gap:0;}
+.pipe-node{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:translateY(18px);transition:opacity .45s,transform .45s;}
+.pipe-node.visible{opacity:1;transform:none;}
+.pipe-icon{width:50px;height:50px;border-radius:12px;background:var(--surface-1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.pipe-icon svg{width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.pipe-icon.beta-icon{border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.06);}
+.pipe-icon.beta-icon svg{stroke:#a78bfa;}
+.pipe-label{font-size:11px;font-weight:600;color:var(--text-muted);letter-spacing:.3px;white-space:nowrap;}
+.pipe-arrow{color:var(--border);font-size:18px;padding:0 8px;margin-bottom:22px;opacity:0;transition:opacity .4s .1s;}
+.pipe-arrow.visible{opacity:1;}
+.sec-props{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:800px;width:100%;}
+.sec-prop{background:var(--surface-1);border:1px solid var(--border);border-radius:8px;padding:16px 18px;text-align:left;opacity:0;transform:translateY(14px);transition:opacity .4s,transform .4s;}
+.sec-prop.visible{opacity:1;transform:none;}
+.sec-prop-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.sec-prop-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.s6-cta-block{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.s6-cta-block h2{font-size:22px;font-weight:700;}
+.s6-cta-block p{font-size:14px;color:var(--text-secondary);}
+.s6-signin-btn{padding:13px 32px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;text-decoration:none;cursor:pointer;transition:background .15s;}
+.s6-signin-btn:hover{background:var(--accent-hover);}
+.lp-footer{border-top:1px solid var(--border);padding:18px 48px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-muted);background:var(--surface-1);position:relative;z-index:1;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:920px){
+  .s0-panel{flex-direction:column;align-items:center;text-align:center;gap:36px;}
+  .s0-left{align-items:center;max-width:100%;}
+  .s0-sub{max-width:100%;}
+  .s0-right{max-width:100%;width:100%;}
+  .s1-panel,.s3-panel,.s4-panel,.s5-panel{flex-direction:column;gap:20px;}
+  .s1-left,.s1-right,.s3-left,.s3-right,.s4-left,.s4-right,.s5-left,.s5-right{max-width:100%;}
+  .navbar-inner{width:calc(100% - 32px);grid-template-columns:1fr auto;}
+  .navbar-links{display:none;}
+  .scroll-chapters{display:none;}
+  .scene-track{height:220vh;}
+  .soc-meta-grid{grid-template-columns:1fr 1fr;}
+  .lp-footer{padding:18px 20px;flex-direction:column;gap:6px;text-align:center;}
+}
+@media(max-width:600px){
+  .s0-title{font-size:30px;letter-spacing:-1.2px;}
+  .log-header-row,.log-row{grid-template-columns:64px 94px 44px 1fr 40px;}
+  .log-row .log-cell:last-child,.log-header-row span:last-child{display:none;}
+  .scene-track{height:180vh;}
+  .scene-panel{padding:0 16px;}
+  .s6-section{padding:64px 16px;}
+}
+/* Reduced motion — drop decorative loops, keep content */
+@media (prefers-reduced-motion: reduce){
+  .hero-term-cursor,.live-dot-anim,.sandbox-status-dot{animation:none !important;}
+  .log-row.entering{animation:none;}
+}
+  </style>
+</head>
+<body>
+
+<div id="lp-bg-canvas"><div id="lp-blob"></div></div>
+
+<!-- ── SENTRA ANIMATED SVG BACKGROUND ──
+     Performance-tuned layer: markup here, static paint + CSS keyframe
+     motion in style.css (.sentra-* / .sb-*), parallax + scene
+     awareness + tab pausing in landing-bg.js. Only grouped layers
+     animate (transform / opacity / dash-offset) — ~10 animated
+     elements on desktop, ~3 on mobile. Remove all three to disable. -->
+<div class="sentra-animated-bg" aria-hidden="true">
+  <svg class="sentra-bg-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <defs>
+      <path id="sb-flow-a" d="M -80 640 C 260 560, 480 720, 800 630 S 1360 500, 1700 590" fill="none"/>
+      <path id="sb-flow-b" d="M -80 250 C 300 330, 640 170, 960 250 S 1500 330, 1700 230" fill="none"/>
+    </defs>
+
+    <!-- Layer 1 · far — static grid + one slow-drifting geometry group -->
+    <g class="sb-layer" data-sb-depth="0.12">
+      <path class="sb-geo-far sb-grid-line" d="M 0 470 H 1600"/>
+      <path class="sb-geo-far sb-grid-line" d="M 0 760 H 1600"/>
+      <path class="sb-geo-far sb-grid-line" d="M 430 0 V 900"/>
+      <path class="sb-geo-far sb-grid-line" d="M 1230 0 V 900"/>
+      <g class="sb-geo-drift">
+        <circle class="sb-geo-far" cx="1210" cy="210" r="250"/>
+        <circle class="sb-geo-far" cx="250" cy="680" r="180"/>
+        <path class="sb-geo-far" d="M 760 90 l 104 60 v 120 l -104 60 l -104 -60 v -120 z"/>
+      </g>
+    </g>
+
+    <!-- Layer 2 · mid — network constellations (2 groups animate) -->
+    <g class="sb-layer" data-sb-depth="0.3">
+      <g class="sb-net sb-net-rotate">
+        <path class="sb-line" d="M 180 240 L 330 320"/>
+        <path class="sb-line" d="M 330 320 L 300 470"/>
+        <path class="sb-line" d="M 330 320 L 470 390"/>
+        <path class="sb-line" d="M 470 390 L 520 250"/>
+        <path class="sb-line" d="M 470 390 L 300 470"/>
+        <circle class="sb-node" cx="180" cy="240" r="3"/>
+        <circle class="sb-node" cx="330" cy="320" r="3.4"/>
+        <circle class="sb-node" cx="300" cy="470" r="2.6"/>
+        <circle class="sb-node" cx="470" cy="390" r="3.2"/>
+        <circle class="sb-node" cx="520" cy="250" r="2.6"/>
+      </g>
+      <g class="sb-net sb-net-drift">
+        <path class="sb-line" d="M 1090 300 L 1230 240"/>
+        <path class="sb-line" d="M 1230 240 L 1350 360"/>
+        <path class="sb-line" d="M 1350 360 L 1290 470"/>
+        <path class="sb-line" d="M 1290 470 L 1140 430"/>
+        <path class="sb-line" d="M 1140 430 L 1090 300"/>
+        <path class="sb-line" d="M 1230 240 L 1290 470"/>
+        <circle class="sb-node" cx="1090" cy="300" r="2.8"/>
+        <circle class="sb-node" cx="1230" cy="240" r="3.4"/>
+        <circle class="sb-node" cx="1350" cy="360" r="2.6"/>
+        <circle class="sb-node" cx="1290" cy="470" r="3"/>
+        <circle class="sb-node" cx="1140" cy="430" r="2.6"/>
+      </g>
+      <g class="sb-net sb-net-still">
+        <path class="sb-line" d="M 700 700 L 840 660 L 920 760"/>
+        <circle class="sb-node" cx="700" cy="700" r="2.6"/>
+        <circle class="sb-node" cx="840" cy="660" r="3"/>
+        <circle class="sb-node" cx="920" cy="760" r="2.4"/>
+      </g>
+      <rect class="sb-node-sq" x="560" y="180" width="8" height="8"/>
+      <rect class="sb-node-sq" x="980" y="140" width="7" height="7"/>
+      <rect class="sb-node-sq" x="1440" y="600" width="8" height="8"/>
+      <rect class="sb-node-sq" x="120" y="540" width="7" height="7"/>
+    </g>
+
+    <!-- Layer 3 · near — data-flow paths, travellers, one sliding arc -->
+    <g class="sb-layer" data-sb-depth="0.55">
+      <use href="#sb-flow-a" id="sb-use-a" class="sb-flow-path"/>
+      <use href="#sb-flow-b" id="sb-use-b" class="sb-flow-path"/>
+      <circle class="sb-traveler" id="sb-traveler-a" r="3.2"/>
+      <circle class="sb-traveler" id="sb-traveler-b" r="2.6"/>
+      <path class="sb-arc" id="sb-arc-a" d="M 1060 700 A 130 130 0 0 1 1240 570"/>
+      <path class="sb-arc" id="sb-arc-b" d="M 240 190 A 100 100 0 0 1 420 140"/>
+    </g>
+
+    <!-- Sandbox cluster — fades in around the Advanced AI [BETA] scene -->
+    <g class="sb-layer sb-sandbox-cluster" id="sb-sandbox-cluster" data-sb-depth="0.4">
+      <rect class="sb-sandbox-outline" x="1040" y="520" width="340" height="230" rx="16"/>
+      <path class="sb-line" d="M 1100 580 L 1215 635"/>
+      <path class="sb-line" d="M 1215 635 L 1330 590"/>
+      <path class="sb-line" d="M 1215 635 L 1180 700"/>
+      <path class="sb-line" d="M 1180 700 L 1310 690"/>
+      <path class="sb-line" d="M 1310 690 L 1330 590"/>
+      <circle class="sb-node" cx="1100" cy="580" r="3"/>
+      <circle class="sb-node" cx="1215" cy="635" r="3.4"/>
+      <circle class="sb-node" cx="1330" cy="590" r="2.8"/>
+      <circle class="sb-node" cx="1180" cy="700" r="2.6"/>
+      <circle class="sb-node" cx="1310" cy="690" r="2.6"/>
+      <circle class="sb-sandbox-verify" cx="1330" cy="590" r="9"/>
+      <path class="sb-sandbox-tie" d="M 1040 635 h -46"/>
+      <path class="sb-sandbox-tie" d="M 1380 635 h 46"/>
+    </g>
+  </svg>
+</div>
+
+<!-- NAVBAR -->
+<header class="site-navbar" id="site-navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">
+      <div class="navbar-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <span class="navbar-logo-text">Sentra <span>AI</span></span>
+    </a>
+    <div class="navbar-links">
+      <button data-nav-scene="1">How it works</button>
+      <button data-nav-scene="2">SOC</button>
+      <button data-nav-scene="3">Audit</button>
+      <button data-nav-scene="4">Copilot</button>
+      <button data-nav-scene="5">Advanced AI</button>
+      <button data-nav-scene="6">Security</button>
+    </div>
+    <div class="navbar-actions">
+      <button class="navbar-theme-btn" id="navbar-theme-btn" title="Toggle theme"><span id="navbar-theme-icon">&#x263E;</span></button>
+      <a href="dashboard.html" class="navbar-signin">Sign In</a>
+      <a href="dashboard.html" class="navbar-cta">Get Started</a>
+    </div>
+  </div>
+</header>
+<div class="lp-progress-bar" id="lp-progress"></div>
+
+<!-- Chapter dots -->
+<div class="scroll-chapters" id="scroll-chapters">
+  <div class="scroll-ch-dot active" data-scene="0" title="Hero"></div>
+  <div class="scroll-ch-dot" data-scene="1" title="Live Logs"></div>
+  <div class="scroll-ch-dot" data-scene="2" title="SOC Investigation"></div>
+  <div class="scroll-ch-dot" data-scene="3" title="Code Audit"></div>
+  <div class="scroll-ch-dot" data-scene="4" title="Copilot AI"></div>
+  <div class="scroll-ch-dot" data-scene="5" title="Advanced AI"></div>
+  <div class="scroll-ch-dot" data-scene="6" title="Security Loop"></div>
+</div>
+
+<div class="lp-story">
+
+<!-- SCENE 0 — HERO -->
+<div class="scene" id="scene-0">
+  <div class="scene-track">
+    <div class="scene-panel s0-panel" id="s0-panel">
+      <div class="s0-left" id="s0-copy">
+        <span class="s0-eyebrow">
+          <span class="sdot sdot-green" style="animation:pulse-dot 1.4s ease-in-out infinite"></span>
+          AI-Assisted Security Operations
+        </span>
+        <h1 class="s0-title">Sentra <span>AI</span></h1>
+        <p class="s0-sub">From raw log to security finding in seconds. Every event investigated. Every vulnerability traced. Every answer grounded in real context.</p>
+        <div class="s0-cta">
+          <a href="dashboard.html" class="s0-cta-primary">Open Portal</a>
+          <button class="s0-cta-secondary" id="s0-learn-more">See how it works &darr;</button>
+        </div>
+        <div class="s0-status-row">
+          <span class="s0-status-item"><span class="sdot sdot-green"></span>SOC Monitoring</span>
+          <span class="s0-status-item"><span class="sdot sdot-green"></span>Audit Engine</span>
+          <span class="s0-status-item"><span class="sdot sdot-blue"></span>Groq AI</span>
+          <span class="s0-status-item"><span class="sdot sdot-green"></span>Live Logs</span>
+        </div>
+      </div>
+      <div class="s0-right" id="s0-right">
+        <div class="term-win">
+          <div class="term-bar">
+            <div class="term-dots"><div class="term-dot term-dot-r"></div><div class="term-dot term-dot-y"></div><div class="term-dot term-dot-g"></div></div>
+            <span class="term-title">Sentra AI &mdash; Activity</span>
+            <span style="margin-left:auto;font-size:10px;color:var(--success);font-weight:600">&#x25CF; LIVE</span>
+          </div>
+          <div class="hero-term-body" id="hero-term-body">
+            <div class="htl" id="htl0"><span class="htl-time">14:32:00</span><span class="htl-content">Ingesting log window — <span class="hl-acc">10 events</span></span></div>
+            <div class="htl" id="htl1"><span class="htl-time">14:32:01</span><span class="htl-content">Pattern analysis: <span class="hl-acc">behavioral clustering</span></span></div>
+            <div class="htl" id="htl2"><span class="htl-time">14:32:02</span><span class="htl-content"><span class="hl-warn">WARN</span> — 3× POST /auth/login → 401 (10.0.0.31)</span></div>
+            <div class="htl" id="htl3"><span class="htl-time">14:32:07</span><span class="htl-content"><span class="hl-danger">ALERT</span> — SQL injection signature: SQLI-HI-001</span></div>
+            <div class="htl" id="htl4"><span class="htl-time">14:32:07</span><span class="htl-content">Trigger score: <span class="hl-danger">94/100</span> → Investigation created</span></div>
+            <div class="htl" id="htl5"><span class="htl-time">14:32:08</span><span class="htl-content">Code audit initiated → <span class="hl-acc">app/routes/users.py</span></span></div>
+            <div class="htl" id="htl6"><span class="htl-time">14:32:09</span><span class="htl-content"><span class="hl-danger">CRITICAL</span> — CWE-89 found at line 45</span></div>
+            <div class="htl" id="htl7"><span class="htl-time">14:32:10</span><span class="htl-content">Copilot context loaded — <span class="hl-ok">ready</span></span></div>
+            <div class="htl" id="htl8"><span class="htl-time">14:32:11</span><span class="htl-content"><span class="hl-ok">&#x2713;</span> SecurityFinding structured and stored<span class="hero-term-cursor"></span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 1 — LIVE LOGS -->
+<div class="scene" id="scene-1">
+  <div class="scene-track">
+    <div class="scene-panel s1-panel" id="s1-panel">
+      <div class="s1-left" id="s1-copy">
+        <span class="s1-eyebrow">Step 1</span>
+        <h2 class="s1-title">Raw security events, streamed live</h2>
+        <p class="s1-body">Every HTTP request, authentication attempt, and anomaly is ingested in real time. Sentra groups events into 10-second windows and watches for behavioral patterns that no single log would reveal alone.</p>
+        <div class="s1-pill"><span class="live-dot-anim"></span>Polling every 5 seconds</div>
+        <p class="s1-body" style="font-size:12.5px;color:var(--text-muted)">Filter by event type, method, or status code. Export to JSON or CSV with timeframe selection.</p>
+      </div>
+      <div class="s1-right" id="s1-right">
+        <div class="term-win">
+          <div class="term-bar">
+            <div class="term-dots"><div class="term-dot term-dot-r"></div><div class="term-dot term-dot-y"></div><div class="term-dot term-dot-g"></div></div>
+            <span class="term-title">Live Logs &mdash; Sentra AI</span>
+            <span style="margin-left:auto;font-size:10px;color:var(--success);font-weight:600">&#x25CF; LIVE</span>
+          </div>
+          <div class="term-body" style="padding:0">
+            <div class="log-table" id="s1-log-table">
+              <div class="log-header-row"><span>Time</span><span>Source IP</span><span>Method</span><span>Path</span><span>Status</span><span>Type</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 2 — SOC INVESTIGATION -->
+<div class="scene" id="scene-2">
+  <div class="scene-track">
+    <div class="scene-panel s2-panel" id="s2-panel">
+      <span class="s2-label" id="s2-label">Step 2 &mdash; SOC Investigation Engine</span>
+      <div class="soc-card" id="s2-soc-card">
+        <div class="soc-card-header">
+          <span class="soc-card-id">INV-a203</span>
+          <span class="sev-badge sev-critical">CRITICAL</span>
+          <span class="soc-card-title">SQL Injection Attack Detected</span>
+          <span style="margin-left:auto;font-size:11px;color:var(--text-muted)">14:32:07 UTC</span>
+        </div>
+        <div class="soc-meta-grid">
+          <div class="soc-meta-cell"><div class="soc-meta-label">Source IP</div><div class="soc-meta-val" style="color:var(--danger)">192.168.1.24</div></div>
+          <div class="soc-meta-cell"><div class="soc-meta-label">Target</div><div class="soc-meta-val">/api/users</div></div>
+          <div class="soc-meta-cell"><div class="soc-meta-label">Confidence</div><div class="soc-meta-val" style="color:var(--warning)" id="s2-conf">98%</div></div>
+          <div class="soc-meta-cell"><div class="soc-meta-label">Logs in window</div><div class="soc-meta-val" id="s2-logcount">1</div></div>
+        </div>
+        <div class="trigger-score-row">
+          <span class="trigger-label">Trigger score</span>
+          <div class="trigger-bar-track"><div class="trigger-bar-fill" id="s2-trigger-fill"></div></div>
+          <span class="trigger-val" id="s2-trigger-val">0 / 100</span>
+        </div>
+        <div class="soc-raw-logs" id="s2-raw"><span style="color:var(--text-muted)">Waiting for logs&hellip;</span></div>
+        <div class="soc-analysis-row" id="s2-analysis-row" style="display:none">
+          <div class="soc-analysis-label">Groq AI Analysis</div>
+          <p class="soc-analysis-text" id="s2-analysis-text"></p>
+        </div>
+      </div>
+      <p style="font-size:12.5px;color:var(--text-muted);text-align:center;max-width:540px;line-height:1.65">Suspicious patterns trigger a 10-second investigation window. Groq analyses all evidence and produces a structured SecurityFinding.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 3 — CODE AUDIT -->
+<div class="scene" id="scene-3">
+  <div class="scene-track">
+    <div class="scene-panel s3-panel" id="s3-panel">
+      <div class="s3-left" id="s3-left">
+        <p style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--warning);margin-bottom:12px">Step 3 &mdash; Authorized Code Audit</p>
+        <h2 style="font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.2;margin-bottom:12px">Attack detected.<br>Vulnerable code identified.</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px">The SOC finding triggers an authorized audit. Sentra crawls the registered application's source, detects the vulnerable pattern, and correlates it with the observed attack.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text-muted)"><span style="width:18px;height:18px;border-radius:50%;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--danger);flex-shrink:0">!</span>Source path resolved server-side — never from the client</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text-muted)"><span style="width:18px;height:18px;border-radius:50%;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--danger);flex-shrink:0">!</span>Only authorized applications can be audited</div>
+          <div style="display:flex;gap:8px;align-items:center;font-size:12px;color:var(--text-muted)"><span style="width:18px;height:18px;border-radius:50%;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.2);display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:var(--success);flex-shrink:0">&#x2713;</span>CWE + OWASP references attached to every finding</div>
+        </div>
+      </div>
+      <div class="s3-right" id="s3-right">
+        <div class="term-win code-win">
+          <div class="term-bar">
+            <div class="term-dots"><div class="term-dot term-dot-r"></div><div class="term-dot term-dot-y"></div><div class="term-dot term-dot-g"></div></div>
+            <span class="term-title">app/routes/users.py</span>
+          </div>
+          <div class="term-body">
+            <div class="code-line"><span class="code-ln">42</span><span class="code-text"><span class="kw">def</span> <span class="fn">get_user</span><span class="op">(</span><span class="var">user_id</span><span class="op">):</span></span></div>
+            <div class="code-line"><span class="code-ln">43</span><span class="code-text">    <span class="var">conn</span> <span class="op">=</span> <span class="fn">get_db_connection</span><span class="op">()</span></span></div>
+            <div class="code-line"><span class="code-ln">44</span><span class="code-text">    <span class="cmt"># TODO: sanitize input</span></span></div>
+            <div class="code-line vuln-line" id="s3-vuln-line"><span class="code-ln">45</span><span class="code-text">    <span class="var">query</span> <span class="op">=</span> <span class="str">"SELECT * FROM users WHERE id="</span> <span class="op">+</span> <span class="var">user_id</span></span><span class="vuln-badge">SQLi</span></div>
+            <div class="code-line"><span class="code-ln">46</span><span class="code-text">    <span class="var">result</span> <span class="op">=</span> <span class="var">conn</span><span class="op">.</span><span class="fn">execute</span><span class="op">(</span><span class="var">query</span><span class="op">)</span></span></div>
+            <div class="code-line"><span class="code-ln">47</span><span class="code-text">    <span class="kw">return</span> <span class="var">result</span><span class="op">.</span><span class="fn">fetchone</span><span class="op">()</span></span></div>
+          </div>
+        </div>
+        <div class="finding-panel" id="s3-finding">
+          <div class="finding-header"><span class="sev-badge sev-critical">CRITICAL</span><span class="finding-title-text">SQL Injection via Unsanitized Input</span></div>
+          <div class="finding-body">
+            <div class="finding-row"><span class="finding-key">CWE</span><span class="finding-val">CWE-89 &middot; Improper Neutralization of Special Elements in an SQL Command</span></div>
+            <div class="finding-row"><span class="finding-key">OWASP</span><span class="finding-val">A03:2021 &mdash; Injection</span></div>
+            <div class="finding-row"><span class="finding-key">Location</span><span class="finding-val">app/routes/users.py &middot; line 45</span></div>
+            <div class="finding-row"><span class="finding-key">Evidence</span><div style="flex:1"><div class="finding-evidence">query = "SELECT * FROM users WHERE id=" + user_id</div></div></div>
+            <div class="finding-row"><span class="finding-key">Fix</span><div style="flex:1"><div class="finding-fix">db.execute("SELECT * FROM users WHERE id=:uid", {"uid": user_id})</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 4 — COPILOT AI -->
+<div class="scene" id="scene-4">
+  <div class="scene-track">
+    <div class="scene-panel s4-panel" id="s4-panel">
+      <div class="s4-left" id="s4-left">
+        <p style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">Step 4 &mdash; Copilot AI</p>
+        <h2 style="font-size:clamp(22px,3vw,34px);font-weight:700;letter-spacing:-.8px;line-height:1.2;margin-bottom:12px">Context-aware answers.<br>Not a generic chatbot.</h2>
+        <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px">Select an investigation or audit, then ask Copilot targeted questions. The backend validates the context object before every call. Groq receives only the relevant Sentra security data — never arbitrary prompts.</p>
+        <div style="background:var(--surface-1);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px">
+          <p style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px">Security boundary</p>
+          <p style="color:var(--text-secondary);line-height:1.6">The model receives a system instruction that restricts it to the supplied security context. General-purpose questions, off-topic requests, and prompt injection attempts are refused by the model, not just the UI.</p>
+        </div>
+      </div>
+      <div class="s4-right" id="s4-right">
+        <div class="term-win chat-win">
+          <div class="term-bar">
+            <div class="term-dots"><div class="term-dot term-dot-r"></div><div class="term-dot term-dot-y"></div><div class="term-dot term-dot-g"></div></div>
+            <span class="term-title">Copilot AI &mdash; Sentra</span>
+            <span style="margin-left:auto;font-size:10px;color:var(--accent);font-weight:600">&#x25CF; Context loaded</span>
+          </div>
+          <div class="term-body">
+            <div class="chat-context-strip">
+              <span style="color:var(--text-muted);font-size:10px;font-weight:600;letter-spacing:.3px">CONTEXT:</span>
+              <span class="ctx-tag">INV-a203</span><span class="ctx-tag">AUDIT-3f2a</span><span class="ctx-tag">CRITICAL &middot; SQL Injection</span><span class="ctx-tag">CWE-89</span>
+            </div>
+            <div class="chat-msg analyst" id="cm1"><span class="chat-msg-role analyst">Analyst</span><div class="chat-msg-bubble">Why was investigation INV-a203 classified as Critical?</div></div>
+            <div class="chat-msg copilot" id="cm2"><span class="chat-msg-role copilot">Sentra Copilot</span><div class="chat-msg-bubble" id="cm2-text"></div></div>
+            <div class="chat-msg analyst" id="cm3"><span class="chat-msg-role analyst">Analyst</span><div class="chat-msg-bubble">What remediation steps should I take?</div></div>
+            <div class="chat-msg copilot" id="cm4"><span class="chat-msg-role copilot">Sentra Copilot</span><div class="chat-msg-bubble" id="cm4-text"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 5 — ADVANCED AI BETA -->
+<div class="scene" id="scene-5">
+  <div class="scene-track">
+    <div class="scene-panel s5-panel" id="s5-panel">
+      <div class="s5-left" id="s5-left">
+        <span class="beta-pill">&#x26A1; BETA</span>
+        <p class="s5-scene-label">Step 5 &mdash; Advanced AI</p>
+        <h2 class="s5-h2">Controlled sandbox.<br>AI-driven validation.</h2>
+        <p class="s5-body">Advanced AI creates an isolated sandbox environment, analyzes the target using the SOC finding and audit result, then systematically validates the security posture — without touching production infrastructure.</p>
+        <p class="s5-body" style="font-size:12px;color:var(--text-muted);border-left:2px solid var(--border);padding-left:10px;margin-top:2px">All testing occurs in a controlled, isolated environment. No autonomous access to customer infrastructure. Every action is logged and requires analyst approval.</p>
+        <div class="s5-stage-indicator" id="s5-stages">
+          <div class="s5-stage active" id="s5-st0"><span class="s5-stage-num">1</span>Finding detected — creating sandbox</div>
+          <div class="s5-stage" id="s5-st1"><span class="s5-stage-num">2</span>Sandbox initialized — AI analyzing target</div>
+          <div class="s5-stage" id="s5-st2"><span class="s5-stage-num">3</span>Security tests running in isolation</div>
+          <div class="s5-stage" id="s5-st3"><span class="s5-stage-num">4</span>Controlled validation complete</div>
+          <div class="s5-stage" id="s5-st4"><span class="s5-stage-num">5</span>Security posture verified — report ready</div>
+        </div>
+      </div>
+      <div class="s5-right" id="s5-right">
+        <div class="sandbox-win">
+          <div class="sandbox-header">
+            <div class="sandbox-header-dots"><div class="sandbox-header-dot sandbox-header-dot-r"></div><div class="sandbox-header-dot sandbox-header-dot-y"></div><div class="sandbox-header-dot sandbox-header-dot-g"></div></div>
+            <span class="sandbox-header-title">Advanced AI &mdash; Sandbox</span>
+            <span class="sandbox-header-badge">ISOLATED</span>
+          </div>
+          <div class="sandbox-body">
+            <div class="sandbox-target-row">
+              <span class="sandbox-target-label">Target</span>
+              <span class="sandbox-target-val">meridian-demo &mdash; /api/users</span>
+            </div>
+            <div class="sandbox-status-row">
+              <div class="sandbox-status-dot idle" id="sb-dot"></div>
+              <span class="sandbox-status-text" id="sb-status">Initializing isolated environment&hellip;</span>
+            </div>
+            <div class="sandbox-checks" id="sb-checks">
+              <div class="sandbox-check" id="sb-c0"><span class="sandbox-check-name">SQL Injection</span><span class="sandbox-check-status" id="sb-s0">PENDING</span></div>
+              <div class="sandbox-check" id="sb-c1"><span class="sandbox-check-name">Cross-Site Scripting (XSS)</span><span class="sandbox-check-status" id="sb-s1">PENDING</span></div>
+              <div class="sandbox-check" id="sb-c2"><span class="sandbox-check-name">Authentication Bypass</span><span class="sandbox-check-status" id="sb-s2">PENDING</span></div>
+              <div class="sandbox-check" id="sb-c3"><span class="sandbox-check-name">Insecure Direct Object Ref</span><span class="sandbox-check-status" id="sb-s3">PENDING</span></div>
+              <div class="sandbox-check" id="sb-c4"><span class="sandbox-check-name">Security Misconfiguration</span><span class="sandbox-check-status" id="sb-s4">PENDING</span></div>
+            </div>
+            <div class="sandbox-result" id="sb-result">
+              <span class="sandbox-result-icon">&#x2713;</span>
+              <span>Security posture verified &mdash; 1 critical finding, remediation confirmed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 6 — PIPELINE / CTA -->
+<div class="s6-section" id="s6-section">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+    <span class="s6-label">The complete pipeline</span>
+    <h2 class="s6-title">One continuous <span>security loop</span></h2>
+    <p style="font-size:14px;color:var(--text-secondary);max-width:480px;line-height:1.7">Every component feeds the next. Raw events become investigations. Investigations become audits. Audits feed Copilot. Advanced AI validates the fix. The loop closes.</p>
+  </div>
+  <div class="pipeline" id="s6-pipeline">
+    <div class="pipe-node" data-delay="0"><div class="pipe-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div><span class="pipe-label">Live Logs</span></div>
+    <div class="pipe-arrow" data-delay="60">&rarr;</div>
+    <div class="pipe-node" data-delay="120"><div class="pipe-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div><span class="pipe-label">Detection</span></div>
+    <div class="pipe-arrow" data-delay="180">&rarr;</div>
+    <div class="pipe-node" data-delay="240"><div class="pipe-icon"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div><span class="pipe-label">SOC Finding</span></div>
+    <div class="pipe-arrow" data-delay="300">&rarr;</div>
+    <div class="pipe-node" data-delay="360"><div class="pipe-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div><span class="pipe-label">Code Audit</span></div>
+    <div class="pipe-arrow" data-delay="420">&rarr;</div>
+    <div class="pipe-node" data-delay="480"><div class="pipe-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path></svg></div><span class="pipe-label">Copilot</span></div>
+    <div class="pipe-arrow" data-delay="540">&rarr;</div>
+    <div class="pipe-node" data-delay="600"><div class="pipe-icon beta-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div><span class="pipe-label">Advanced AI</span></div>
+    <div class="pipe-arrow" data-delay="660">&rarr;</div>
+    <div class="pipe-node" data-delay="720"><div class="pipe-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="9"></circle></svg></div><span class="pipe-label">Verified</span></div>
+  </div>
+  <div class="sec-props" id="s6-props">
+    <div class="sec-prop" data-delay="0"><div class="sec-prop-title">No source_path from clients</div><div class="sec-prop-desc">Backend resolves trusted filesystem paths. The frontend never submits file locations.</div></div>
+    <div class="sec-prop" data-delay="80"><div class="sec-prop-title">Authorized application registry</div><div class="sec-prop-desc">Only pre-registered, active applications can be audited. Unknown apps are rejected at the API.</div></div>
+    <div class="sec-prop" data-delay="160"><div class="sec-prop-title">JWT authentication</div><div class="sec-prop-desc">All analyst endpoints require a valid Bearer token. Expired tokens trigger automatic sign-out.</div></div>
+    <div class="sec-prop" data-delay="240"><div class="sec-prop-title">Isolated sandbox</div><div class="sec-prop-desc">Advanced AI operates in a controlled environment. No autonomous access to production infrastructure without analyst approval.</div></div>
+  </div>
+  <div class="s6-cta-block">
+    <h2>Start monitoring now</h2>
+    <p>Sign in to the Sentra AI portal to begin.</p>
+    <a href="dashboard.html" class="s6-signin-btn">Open Sentra AI &rarr;</a>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">Demo: admin@sentra.ai / password</p>
+  </div>
+</div>
+
+<footer class="lp-footer">
+  <span>&#x1F6E1; <strong>Sentra AI</strong> &mdash; Security Operations &amp; Audit Platform</span>
+  <span style="font-size:11px;color:var(--text-muted)">Made with IBM Bob</span>
+</footer>
+
+</div><!-- /lp-story -->
+
+<script>
+(function () {
+  'use strict';
+
+  var NAV_H = 56;
+  var NUM_STICKY = 6; // scenes 0-5 are sticky; scene 6 is static pipeline
+
+  // ── Theme ─────────────────────────────────────────────────────
+  function applyTheme(t) {
+    document.documentElement.dataset.theme = t;
+    localStorage.setItem('sentra-theme', t);
+    var icon = document.getElementById('navbar-theme-icon');
+    if (icon) icon.textContent = t === 'light' ? '\u2600' : '\u263E';
+  }
+  applyTheme(localStorage.getItem('sentra-theme') || 'dark');
+  var themeBtn = document.getElementById('navbar-theme-btn');
+  if (themeBtn) themeBtn.addEventListener('click', function () {
+    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  });
+
+  // ── "See how it works" ────────────────────────────────────────
+  var learnMore = document.getElementById('s0-learn-more');
+  if (learnMore) learnMore.addEventListener('click', function (e) {
+    e.preventDefault();
+    scrollToScene(1);
+  });
+
+  // ── Nav / progress bar ────────────────────────────────────────
+  var nav = document.getElementById('site-navbar');
+  var progressBar = document.getElementById('lp-progress');
+
+  // ── Scene bounds cache ────────────────────────────────────────
+  var sceneBounds = null;
+  var pageTotalH = 0;
+
+  function computeSceneBounds() {
+    var scenes = [];
+    for (var i = 0; i < NUM_STICKY; i++) {
+      var el = document.getElementById('scene-' + i);
+      if (el) scenes.push({ top: el.getBoundingClientRect().top + window.scrollY, height: el.offsetHeight });
+      else scenes.push(null);
+    }
+    var s6 = document.getElementById('s6-section');
+    if (s6) scenes.push({ top: s6.getBoundingClientRect().top + window.scrollY, height: s6.offsetHeight });
+    else scenes.push(null);
+    sceneBounds = scenes;
+    pageTotalH = Math.max(0, document.body.scrollHeight - window.innerHeight);
+  }
+
+  window.addEventListener('resize', function () { sceneBounds = null; });
+
+  function clamp(v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; }
+  function ease(t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+  function sceneProgress(idx) {
+    if (!sceneBounds) computeSceneBounds();
+    var b = sceneBounds[idx];
+    if (!b) return 0;
+    var scrolled = window.scrollY - b.top;
+    var stickyRange = b.height - (window.innerHeight - NAV_H);
+    if (stickyRange <= 0) return 0;
+    return clamp(scrolled / stickyRange, 0, 1);
+  }
+
+  // ── Scroll to scene — land where content is already revealed ─
+  // Scenes reveal their content as sticky progress increases; jumping to a
+  // scene must land past the reveal thresholds so no blank panel is shown.
+  var REVEAL_P = 0.52;
+  function scrollToScene(idx, instant) {
+    if (!sceneBounds) computeSceneBounds();
+    var behavior = instant ? 'auto' : 'smooth';
+    if (idx === 6) {
+      var s6 = document.getElementById('s6-section');
+      if (s6) window.scrollTo({ top: s6.getBoundingClientRect().top + window.scrollY - NAV_H, behavior: behavior });
+      return;
+    }
+    if (idx === 0) { window.scrollTo({ top: 0, behavior: behavior }); return; }
+    var b = sceneBounds[idx];
+    if (!b) return;
+    var stickyRange = b.height - (window.innerHeight - NAV_H);
+    var targetY = b.top + stickyRange * REVEAL_P;
+    window.scrollTo({ top: targetY, behavior: behavior });
+  }
+
+  document.querySelectorAll('[data-nav-scene]').forEach(function (btn) {
+    btn.addEventListener('click', function () { scrollToScene(parseInt(btn.getAttribute('data-nav-scene'))); });
+  });
+
+  var chDots = document.querySelectorAll('.scroll-ch-dot');
+  chDots.forEach(function (dot) {
+    dot.addEventListener('click', function () { scrollToScene(parseInt(dot.getAttribute('data-scene'))); });
+  });
+
+  // ── Direct deep-links (#scene-N) — never land on a blank panel ──
+  function hashSceneIndex() {
+    var m = location.hash.match(/^#scene-([0-6])$/);
+    return m ? parseInt(m[1]) : -1;
+  }
+  window.addEventListener('hashchange', function () {
+    var idx = hashSceneIndex();
+    if (idx >= 0) scrollToScene(idx);
+  });
+
+  // ── Background ambience — static CSS dot-grid + one soft blob ─
+  // The dot-grid is pure CSS and never repaints; the blob is a single
+  // element moved with transform only and recoloured on scene change.
+  // No canvas, no per-frame drawing.
+  var blob = document.getElementById('lp-blob');
+  var winW = window.innerWidth, winH = window.innerHeight;
+  var blobHalf = Math.max(winW, winH) * 0.6;
+  var blobKey = '';
+
+  function updateBlob(sy, totalH) {
+    if (!blob) return;
+    var pr = totalH > 0 ? sy / totalH : 0;
+    var bx = winW * (0.78 - pr * 0.52) - blobHalf;
+    var by = winH * (0.28 + pr * 0.44) - blobHalf;
+    blob.style.transform = 'translate3d(' + bx.toFixed(1) + 'px,' + by.toFixed(1) + 'px,0)';
+    var idx = 0;
+    if (sceneBounds) {
+      for (var i = 0; i < NUM_STICKY; i++) {
+        var b = sceneBounds[i];
+        if (b && sy >= b.top - winH * 0.4) idx = i;
+      }
+    }
+    var key = idx >= 5 ? '5' : idx === 2 ? '2' : idx === 3 ? '3' : '0';
+    if (key !== blobKey) { blobKey = key; blob.setAttribute('data-scene', key); }
+  }
+
+  // ── SCENE 0 — HERO ───────────────────────────────────────────
+  var s0Copy  = document.getElementById('s0-copy');
+  var s0Right = document.getElementById('s0-right');
+
+  // Hero terminal lines — revealed on a timeout loop (cinematic entrance)
+  var heroLines = [];
+  for (var i = 0; i <= 8; i++) {
+    var el = document.getElementById('htl' + i);
+    if (el) heroLines.push(el);
+  }
+  var heroLinesStarted = false;
+  function startHeroLines() {
+    if (heroLinesStarted) return;
+    heroLinesStarted = true;
+    heroLines.forEach(function(el, idx) {
+      setTimeout(function() { el.classList.add('vis'); }, idx * 280 + 200);
+    });
+  }
+
+  var s0RightEntered = false; // set true once entrance animation completes
+  function updateScene0(p) {
+    // Exit: hero content fades/lifts as user scrolls into scene 1
+    var exitP = ease(clamp(p / 0.6, 0, 1));
+    if (s0Copy) {
+      s0Copy.style.opacity = 1 - exitP;
+      s0Copy.style.transform = 'translateY(' + (exitP * -44) + 'px)';
+    }
+    // Only apply exit to right panel after entrance has completed
+    if (s0Right && s0RightEntered) {
+      s0Right.style.transition = 'none';
+      s0Right.style.opacity = 1 - exitP;
+      s0Right.style.transform = 'translateX(' + (exitP * 32) + 'px) translateY(' + (exitP * -20) + 'px)';
+    }
+  }
+
+  // ── SCENE 1 — LIVE LOGS ──────────────────────────────────────
+  var s1Copy  = document.getElementById('s1-copy');
+  var s1Right = document.getElementById('s1-right');
+  var s1Table = document.getElementById('s1-log-table');
+
+  var ALL_LOGS = [
+    { ts:'14:32:00', ip:'10.0.0.4',      method:'GET',  path:'/api/products',  status:'200', etype:'api',        suspicious:false },
+    { ts:'14:32:01', ip:'192.168.1.10',  method:'GET',  path:'/dashboard',     status:'200', etype:'api',        suspicious:false },
+    { ts:'14:32:02', ip:'10.0.0.31',     method:'POST', path:'/auth/login',    status:'401', etype:'login',      suspicious:false },
+    { ts:'14:32:02', ip:'10.0.0.31',     method:'POST', path:'/auth/login',    status:'401', etype:'login',      suspicious:false },
+    { ts:'14:32:03', ip:'10.0.0.31',     method:'POST', path:'/auth/login',    status:'401', etype:'login',      suspicious:false },
+    { ts:'14:32:04', ip:'192.168.1.10',  method:'GET',  path:'/api/users/4',   status:'200', etype:'api',        suspicious:false },
+    { ts:'14:32:05', ip:'192.168.1.10',  method:'GET',  path:'/api/users/5',   status:'200', etype:'api',        suspicious:false },
+    { ts:'14:32:06', ip:'192.168.1.24',  method:'POST', path:'/search',        status:'500', etype:'api',        suspicious:false },
+    { ts:'14:32:07', ip:'192.168.1.24',  method:'GET',  path:'/admin/users',   status:'403', etype:'api',        suspicious:false },
+    { ts:'14:32:07', ip:'192.168.1.24',  method:'POST', path:'/api/users?id=1+UNION+SELECT+null,username,password+FROM+admin--', status:'500', etype:'suspicious', suspicious:true },
+    { ts:'14:32:08', ip:'10.0.0.72',     method:'GET',  path:'/api/orders',    status:'200', etype:'api',        suspicious:false },
+    { ts:'14:32:09', ip:'192.168.1.55',  method:'GET',  path:'/api/settings',  status:'200', etype:'api',        suspicious:false },
+  ];
+
+  function buildLogRow(log, highlight) {
+    var row = document.createElement('div');
+    row.className = 'log-row' + (log.suspicious ? ' suspicious' : '') + (highlight ? ' highlight-row' : '');
+    var sc = log.status.startsWith('2') ? 's2' : log.status.startsWith('4') ? 's4' : 's5';
+    var ec = log.suspicious ? 'suspicious' : log.etype === 'login' ? 'login' : 'api';
+    var pp = log.path.length > 30 ? log.path.slice(0, 28) + '\u2026' : log.path;
+    row.innerHTML =
+      '<span class="log-cell">'+log.ts+'</span><span class="log-cell">'+log.ip+'</span>' +
+      '<span class="log-cell log-method '+log.method+'">'+log.method+'</span>' +
+      '<span class="log-cell" title="'+log.path+'">'+pp+'</span>' +
+      '<span class="log-cell log-status '+sc+'">'+log.status+'</span>' +
+      '<span class="log-cell log-etype '+ec+'">'+log.etype+'</span>';
+    return row;
+  }
+
+  var s1RenderedCount = 0;
+  function updateScene1(p) {
+    // Left text — slides in from left
+    if (s1Copy) {
+      var lP = ease(clamp(p / 0.18, 0, 1));
+      s1Copy.style.opacity = lP;
+      s1Copy.style.transform = 'translateX(' + ((1 - lP) * -28) + 'px)';
+    }
+    // Right table — slides in from right
+    if (s1Right) {
+      var rP = ease(clamp(p / 0.22, 0, 1));
+      s1Right.style.opacity = rP;
+      s1Right.style.transform = 'translateX(' + ((1 - rP) * 36) + 'px)';
+    }
+    // Log rows stream in proportional to progress
+    var showCount = Math.round(clamp(p / 0.75, 0, 1) * ALL_LOGS.length);
+    if (showCount !== s1RenderedCount && s1Table) {
+      var prevCount = s1RenderedCount;
+      s1RenderedCount = showCount;
+      s1Table.querySelectorAll('.log-row').forEach(function (r) { r.remove(); });
+      for (var i = 0; i < showCount; i++) {
+        var row = buildLogRow(ALL_LOGS[i], ALL_LOGS[i].suspicious && p > 0.5);
+        if (i >= prevCount) row.classList.add('entering');
+        s1Table.appendChild(row);
+      }
+    }
+  }
+
+  // ── SCENE 2 — SOC ────────────────────────────────────────────
+  var s2TFill  = document.getElementById('s2-trigger-fill');
+  var s2TVal   = document.getElementById('s2-trigger-val');
+  var s2Raw    = document.getElementById('s2-raw');
+  var s2LC     = document.getElementById('s2-logcount');
+  var s2AR     = document.getElementById('s2-analysis-row');
+  var s2AT     = document.getElementById('s2-analysis-text');
+  var s2Card   = document.getElementById('s2-soc-card');
+  var s2Label  = document.getElementById('s2-label');
+  var ATXT = 'The request payload contains classic UNION-based SQL injection syntax targeting the user lookup endpoint. The database error (HTTP 500) indicates the injection affected query parsing. Multiple 401 failures from a neighbouring IP in the same window suggest coordinated reconnaissance. Immediate remediation of the unsanitized input at /api/users is recommended.';
+  var RSTEPS = [
+    '<span style="color:var(--text-muted)">[14:32:07] POST /api/users?id=1+UNION+SELECT\u2026 \u2192 500</span>',
+    '<span style="color:var(--text-muted)">[14:32:07] POST /api/users?id=1+UNION+SELECT\u2026 \u2192 500</span>\n<span class="hl">[14:32:07] ALERT: sql_guard \u2014 SQLI-HI-001 score=94/100</span>',
+    '<span style="color:var(--text-muted)">[14:32:07] POST /api/users?id=1+UNION+SELECT\u2026 \u2192 500</span>\n<span class="hl">[14:32:07] ALERT: sql_guard \u2014 SQLI-HI-001 score=94/100</span>\n<span style="color:var(--text-muted)">[14:32:02\u219307] 3\u00d7 POST /auth/login \u2192 401 (same /24)</span>',
+  ];
+  var s2LastStep = -1;
+  var s2LastScore = -1;
+  var s2LastDanger = null;
+  var s2LastLen = -1;
+  function updateScene2(p) {
+    // Label fades in
+    if (s2Label) s2Label.style.opacity = ease(clamp(p / 0.1, 0, 1));
+    // Card slides up from below
+    if (s2Card) {
+      var ep = ease(clamp(p / 0.18, 0, 1));
+      s2Card.style.opacity = ep;
+      s2Card.style.transform = 'translateY(' + ((1 - ep) * 32) + 'px)';
+    }
+    // Trigger score fills — scaleX (no layout), write only on change
+    var scoreP = ease(clamp(p / 0.45, 0, 1));
+    var score = Math.round(scoreP * 94);
+    if (score !== s2LastScore) {
+      s2LastScore = score;
+      if (s2TFill) s2TFill.style.transform = 'scaleX(' + scoreP.toFixed(4) + ')';
+      if (s2TVal)  s2TVal.textContent  = score + ' / 100';
+      if (s2LC)    s2LC.textContent    = 1 + Math.round(scoreP * 9);
+    }
+    // Raw log lines appear step by step
+    var rawStep = p < 0.2 ? 0 : p < 0.42 ? 1 : 2;
+    if (rawStep !== s2LastStep && s2Raw) { s2LastStep = rawStep; s2Raw.innerHTML = RSTEPS[rawStep]; }
+    // AI analysis typewriter — write only when the char count changes
+    if (s2AR) {
+      var show = p > 0.52;
+      s2AR.style.display = show ? 'block' : 'none';
+      if (show && s2AT) {
+        var typeP = clamp((p - 0.52) / 0.38, 0, 1);
+        var n = Math.round(typeP * ATXT.length);
+        if (n !== s2LastLen) {
+          s2LastLen = n;
+          s2AT.textContent = ATXT.slice(0, n) + (typeP < 1 ? '\u258c' : '');
+        }
+      } else if (!show) { s2LastLen = -1; }
+    }
+    // Card border highlight as score rises — state-change writes only
+    var danger = scoreP > 0.65;
+    if (danger !== s2LastDanger) {
+      s2LastDanger = danger;
+      if (s2Card) s2Card.style.borderColor = danger ? 'rgba(248,113,113,.35)' : '';
+    }
+  }
+
+  // ── SCENE 3 — AUDIT ──────────────────────────────────────────
+  var s3VL = document.getElementById('s3-vuln-line');
+  var s3FP = document.getElementById('s3-finding');
+  var s3L  = document.getElementById('s3-left');
+  var s3R  = document.getElementById('s3-right');
+  function updateScene3(p) {
+    if (s3L) {
+      var lP = ease(clamp(p / 0.2, 0, 1));
+      s3L.style.opacity = lP;
+      s3L.style.transform = 'translateX(' + ((1 - lP) * -28) + 'px)';
+    }
+    if (s3R) {
+      var rP = ease(clamp(p / 0.22, 0, 1));
+      s3R.style.opacity = rP;
+      s3R.style.transform = 'translateX(' + ((1 - rP) * 28) + 'px)';
+    }
+    if (s3VL) s3VL.classList.toggle('active', p > 0.32);
+    if (s3FP) s3FP.classList.toggle('visible', p > 0.52);
+  }
+
+  // ── SCENE 4 — COPILOT ────────────────────────────────────────
+  var CM1  = document.getElementById('cm1');
+  var CM2  = document.getElementById('cm2');
+  var CM2T = document.getElementById('cm2-text');
+  var CM3  = document.getElementById('cm3');
+  var CM4  = document.getElementById('cm4');
+  var CM4T = document.getElementById('cm4-text');
+  var s4L  = document.getElementById('s4-left');
+  var s4R  = document.getElementById('s4-right');
+  var R1 = 'The investigation was classified Critical because the trigger score reached 94/100. The SQL injection payload (UNION SELECT targeting the admin table) directly confirms exploitability — the HTTP 500 response from the database indicates the query was parsed with the injected syntax. Combined with 3 failed auth attempts from a neighbouring subnet, this matches a coordinated attack signature.';
+  var R2 = '1. Apply parameterized queries immediately — db.execute("SELECT * FROM users WHERE id=:uid", {"uid": user_id}). 2. Block source 192.168.1.24 at the perimeter firewall. 3. Review database logs for potential data exfiltration. 4. Enable WAF ruleset SQLI-HI-001. 5. Audit all endpoints accepting user_id parameters.';
+  var cm2LastLen = -1, cm4LastLen = -1;
+  function updateScene4(p) {
+    if (s4L) {
+      var lP = ease(clamp(p / 0.16, 0, 1));
+      s4L.style.opacity = lP;
+      s4L.style.transform = 'translateX(' + ((1 - lP) * -22) + 'px)';
+    }
+    if (s4R) {
+      var rP = ease(clamp(p / 0.2, 0, 1));
+      s4R.style.opacity = rP;
+      s4R.style.transform = 'translateX(' + ((1 - rP) * 22) + 'px)';
+    }
+    if (CM1) CM1.classList.toggle('visible', p > 0.1);
+    if (p > 0.2 && CM2) CM2.classList.add('visible');
+    if (CM2T) {
+      var t1 = clamp((p - 0.25) / 0.32, 0, 1);
+      var n1 = t1 > 0 ? Math.round(t1 * R1.length) : -1;
+      if (n1 !== cm2LastLen) {
+        cm2LastLen = n1;
+        CM2T.textContent = n1 > 0 ? R1.slice(0, n1) + (t1 < 1 ? '\u258c' : '') : '';
+      }
+    }
+    if (CM3) CM3.classList.toggle('visible', p > 0.62);
+    if (p > 0.67 && CM4) CM4.classList.add('visible');
+    if (CM4T) {
+      var t2 = clamp((p - 0.72) / 0.24, 0, 1);
+      var n2 = t2 > 0 ? Math.round(t2 * R2.length) : -1;
+      if (n2 !== cm4LastLen) {
+        cm4LastLen = n2;
+        CM4T.textContent = n2 > 0 ? R2.slice(0, n2) + (t2 < 1 ? '\u258c' : '') : '';
+      }
+    }
+  }
+
+  // ── SCENE 5 — ADVANCED AI ────────────────────────────────────
+  var s5L      = document.getElementById('s5-left');
+  var s5R      = document.getElementById('s5-right');
+  var sbDot    = document.getElementById('sb-dot');
+  var sbStatus = document.getElementById('sb-status');
+  var sbResult = document.getElementById('sb-result');
+  var sbChecks = [0,1,2,3,4].map(function(i){ return document.getElementById('sb-c' + i); });
+  var sbStats  = [0,1,2,3,4].map(function(i){ return document.getElementById('sb-s' + i); });
+  var s5Stages = [0,1,2,3,4].map(function(i){ return document.getElementById('s5-st' + i); });
+
+  var SB_THRESHOLDS = [0, 0.20, 0.40, 0.65, 0.85];
+  var CHECK_T = [0.28, 0.38, 0.48, 0.58, 0.68];
+  var CHECK_P = [0.40, 0.50, 0.60, 0.70, 0.80];
+
+  function setStage(idx) {
+    s5Stages.forEach(function(st, i) {
+      if (!st) return;
+      st.classList.remove('active', 'done');
+      if (i < idx) st.classList.add('done');
+      else if (i === idx) st.classList.add('active');
+    });
+  }
+
+  var s5LastQ = -1;
+  function updateScene5(p) {
+    if (s5L) {
+      var lP = ease(clamp(p / 0.14, 0, 1));
+      s5L.style.opacity = lP;
+      s5L.style.transform = 'translateX(' + ((1 - lP) * -22) + 'px)';
+    }
+    if (s5R) {
+      var rP = ease(clamp(p / 0.17, 0, 1));
+      s5R.style.opacity = rP;
+      s5R.style.transform = 'translateX(' + ((1 - rP) * 22) + 'px)';
+    }
+
+    // Quantise the class-list churn below to ~1% progress steps
+    var q = Math.round(p * 100);
+    if (q === s5LastQ) return;
+    s5LastQ = q;
+
+    var stageIdx = 0;
+    for (var i = SB_THRESHOLDS.length - 1; i >= 0; i--) {
+      if (p >= SB_THRESHOLDS[i]) { stageIdx = i; break; }
+    }
+    setStage(stageIdx);
+
+    if (sbDot && sbStatus) {
+      if (p < 0.15)      { sbDot.className = 'sandbox-status-dot idle';    sbStatus.textContent = 'Initializing isolated environment\u2026'; }
+      else if (p < 0.83) { sbDot.className = 'sandbox-status-dot running'; sbStatus.textContent = 'AI analysis running in isolated sandbox\u2026'; }
+      else               { sbDot.className = 'sandbox-status-dot done';    sbStatus.textContent = 'Validation complete'; }
+    }
+
+    sbChecks.forEach(function(ch, i) {
+      if (!ch) return;
+      if (p >= CHECK_T[i]) {
+        ch.classList.add('visible');
+        if (p >= CHECK_P[i]) {
+          ch.classList.remove('testing');
+          ch.classList.add(i === 0 ? 'confirmed' : 'pass');
+          if (sbStats[i]) sbStats[i].textContent = i === 0 ? 'CONFIRMED' : 'PASS';
+        } else {
+          ch.classList.remove('pass', 'confirmed');
+          ch.classList.add('testing');
+          if (sbStats[i]) sbStats[i].textContent = 'TESTING\u2026';
+        }
+      } else {
+        ch.classList.remove('visible', 'testing', 'pass', 'confirmed');
+        if (sbStats[i]) sbStats[i].textContent = 'PENDING';
+      }
+    });
+
+    if (sbResult) sbResult.classList.toggle('visible', p > 0.89);
+  }
+
+  // ── SCENE 6 — IntersectionObserver ───────────────────────────
+  function initScene6IO() {
+    var nodes = document.querySelectorAll('#s6-pipeline .pipe-node, #s6-pipeline .pipe-arrow');
+    var props = document.querySelectorAll('#s6-props .sec-prop');
+    function observe(els) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            setTimeout(function () { el.classList.add('visible'); }, parseInt(el.getAttribute('data-delay') || '0'));
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(function (el) { io.observe(el); });
+    }
+    observe(nodes);
+    observe(props);
+  }
+
+  // ── Active scene tracker ─────────────────────────────────────
+  function getActiveScene() {
+    if (!sceneBounds) computeSceneBounds();
+    var sy = window.scrollY, vh = window.innerHeight;
+    for (var i = 0; i < NUM_STICKY; i++) {
+      var b = sceneBounds[i];
+      if (!b) continue;
+      if (sy >= b.top - vh * 0.5 && sy < b.top + b.height - vh * 0.3) return i;
+    }
+    return 6;
+  }
+
+  function updateChapterDots(active) {
+    chDots.forEach(function (dot) {
+      dot.classList.toggle('active', parseInt(dot.getAttribute('data-scene')) === active);
+    });
+  }
+
+  // ── Main RAF loop — only drives scenes around the viewport ────
+  var sceneUpdaters = [updateScene0, updateScene1, updateScene2, updateScene3, updateScene4, updateScene5];
+  var ticking = false;
+  function updateAll() {
+    ticking = false;
+    if (!sceneBounds) computeSceneBounds();
+    var sy = window.scrollY;
+    if (progressBar) progressBar.style.transform = 'scaleX(' + (pageTotalH > 0 ? Math.min(sy / pageTotalH, 1) : 0) + ')';
+    if (nav) nav.classList.toggle('scrolled', sy > 4);
+
+    // Offscreen sections stay untouched — only the active scene and its
+    // immediate neighbours receive per-frame work.
+    var active = getActiveScene();
+    var lo = Math.max(0, active - 1);
+    var hi = Math.min(NUM_STICKY - 1, active + 1);
+    for (var i = lo; i <= hi; i++) sceneUpdaters[i](sceneProgress(i));
+
+    updateChapterDots(active);
+    updateBlob(sy, pageTotalH);
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { requestAnimationFrame(updateAll); ticking = true; }
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    winW = window.innerWidth; winH = window.innerHeight;
+    blobHalf = Math.max(winW, winH) * 0.6;
+    sceneBounds = null;
+    updateAll();
+  });
+
+  function init() {
+    computeSceneBounds();
+    updateAll();
+    initScene6IO();
+
+    // If loaded with #scene-N, snap straight to the revealed content.
+    // The browser's native anchor jump may happen after this, so re-snap
+    // once more after window load + one frame to guarantee it wins.
+    var hIdx = hashSceneIndex();
+    if (hIdx >= 0) {
+      scrollToScene(hIdx, true);
+      var resnap = function () {
+        requestAnimationFrame(function () {
+          sceneBounds = null;
+          scrollToScene(hashSceneIndex(), true);
+        });
+      };
+      if (document.readyState === 'complete') resnap();
+      else window.addEventListener('load', resnap);
+      setTimeout(resnap, 500); // final safety pass once layout has settled
+    }
+
+    // Hero right panel — animate in after short delay, then hand off to scroll
+    if (s0Right) {
+      setTimeout(function() {
+        s0Right.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)';
+        s0Right.style.opacity = '1';
+        s0Right.style.transform = 'translateX(0)';
+        startHeroLines();
+        setTimeout(function() { s0RightEntered = true; }, 750);
+      }, 350);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+}());
+</script>
+
+<!-- Animated SVG background — CSS keyframe motion + landing-bg.js (see .sentra-animated-bg) -->
+<script src="landing-bg.js"></script>
+</body>
+</html>

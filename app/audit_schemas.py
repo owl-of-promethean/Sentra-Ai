@@ -1,5 +1,5 @@
 """
-Audit subsystem schemas for SOC-AI.
+Audit subsystem schemas for Sentra AI.
 
 Phase 1: data structures and API contracts.
 Phase 2: source-code crawler results, dependency info, knowledge queries,

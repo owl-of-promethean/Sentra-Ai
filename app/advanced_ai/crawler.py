@@ -123,7 +123,7 @@ class SandboxCrawler:
                 try:
                     resp = client.get(
                         base_url + path,
-                        headers={"User-Agent": "Sentinel-AdvancedAI-Crawler/0.1"},
+                        headers={"User-Agent": "Sentra-AdvancedAI-Crawler/0.1"},
                     )
                 except Exception:
                     # Unreachable page — record nothing and continue.
@@ -216,7 +216,7 @@ class SandboxCrawler:
                 ) as client:
                     seed_resp = client.get(
                         base_url + p,
-                        headers={"User-Agent": "Sentinel-AdvancedAI-Crawler/0.1"},
+                        headers={"User-Agent": "Sentra-AdvancedAI-Crawler/0.1"},
                     )
                 seed_auth = (
                     "required" if seed_resp.status_code in (401, 403) else "none"

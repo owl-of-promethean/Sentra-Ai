@@ -1,5 +1,5 @@
 """
-Authorized Application Registry for SOC-AI.
+Authorized Application Registry for Sentra AI.
 
 This module is the SINGLE source of truth for which customer applications
 are permitted to be audited by the SOC system.

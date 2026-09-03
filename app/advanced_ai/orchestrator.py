@@ -428,7 +428,7 @@ class Orchestrator:
 
     @staticmethod
     def _update_history(job: AdvancedAIJob) -> None:
-        """Persist job outcome to the shared Sentinel history store."""
+        """Persist job outcome to the shared Sentra history store."""
         try:
             from app.history import get_history_store
             get_history_store().update_advanced_ai_entry(job)

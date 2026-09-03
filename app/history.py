@@ -1,5 +1,5 @@
 """
-Local history store for SOC-AI.
+Local history store for Sentra AI.
 
 Persists both SOC investigations and audit records to a single JSON
 file on disk so history survives a FastAPI process restart.

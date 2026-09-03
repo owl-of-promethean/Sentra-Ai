@@ -2,7 +2,7 @@
 FastAPI routes for Advanced AI [BETA] validation jobs.
 
 Security contract (enforced entirely on the backend):
-  - Every job requires at least one real Sentinel context
+  - Every job requires at least one real Sentra context
     (investigation_id and/or audit_id).
   - The target application must exist in the trusted registry, be
     active, AND be explicitly approved for Advanced AI.
@@ -231,16 +231,16 @@ async def create_job(
     """
     Create an Advanced AI validation job.
 
-    Requires at least one Sentinel context (investigation_id or
+    Requires at least one Sentra context (investigation_id or
     audit_id). The target is resolved from the trusted registry.
     """
-    # ---- 1. At least one valid Sentinel context --------------------
+    # ---- 1. At least one valid Sentra context --------------------
     if not body.investigation_id and not body.audit_id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "message": (
-                    "At least one Sentinel context is required: "
+                    "At least one Sentra context is required: "
                     "provide investigation_id and/or audit_id."
                 )
             },

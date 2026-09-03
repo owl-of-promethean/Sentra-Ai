@@ -1,5 +1,5 @@
 """
-Source-code crawler for SOC-AI security audits.
+Source-code crawler for Sentra AI security audits.
 
 Recursively discovers and reads source files from a local project
 directory.  Returns structured results with exact file paths, line

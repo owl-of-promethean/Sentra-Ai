@@ -1,4 +1,4 @@
-# CWE / OWASP Security Reference — SOC-AI Audit Knowledge Base
+# CWE / OWASP Security Reference — Sentra AI Audit Knowledge Base
 
 > **IMPORTANT — FOR AI USE**: This document is REFERENCE MATERIAL only.
 > The presence of a pattern described here does NOT mean the application under

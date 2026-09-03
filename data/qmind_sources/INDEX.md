@@ -1,4 +1,4 @@
-# SOC-AI Security Knowledge Base Configuration
+# Sentra AI Security Knowledge Base Configuration
 
 ## Overview
 This notebook contains cybersecurity knowledge to help interpret behavioral evidence from web application monitoring WITHOUT prematurely classifying specific attacks.
@@ -73,9 +73,9 @@ This notebook contains cybersecurity knowledge to help interpret behavioral evid
 
 ---
 
-### Document 5: SOC-AI Behavioral Evidence Guide
+### Document 5: Sentra AI Behavioral Evidence Guide
 **File**: `05_soc_ai_behavioral_guide.md`  
-**Purpose**: Interpretation guide for SOC-AI pipeline
+**Purpose**: Interpretation guide for Sentra AI pipeline
 
 **Core Principles**:
 1. Evidence ≠ Conclusion

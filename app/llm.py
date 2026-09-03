@@ -1,5 +1,5 @@
 """
-LLM Client for SOC-AI — Groq backend.
+LLM Client for Sentra AI — Groq backend.
 
 Groq (openai/gpt-oss-20b via https://api.groq.com/openai/v1) is the
 intelligence layer of the system.  Python prepares the investigation
@@ -782,7 +782,7 @@ def _enforce_audit_token_limit(prompt: str) -> str:
 
 class GeminiClient:
     """
-    LLM client for SOC-AI analysis — backed by Groq.
+    LLM client for Sentra AI analysis — backed by Groq.
 
     The class name is preserved for backward compatibility with
     existing tests and call sites.  Internally all calls route

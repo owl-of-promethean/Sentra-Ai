@@ -1,5 +1,5 @@
 """
-Audit knowledge retriever for SOC-AI.
+Audit knowledge retriever for Sentra AI.
 
 Retrieves local security reference material relevant to a code audit.
 

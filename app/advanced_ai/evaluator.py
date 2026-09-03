@@ -166,7 +166,7 @@ def evaluate_fallback(
                 verdict="INCONCLUSIVE",
                 confidence=0.5,
                 reasoning=(
-                    "The sandbox enforced authentication; Sentinel holds no "
+                    "The sandbox enforced authentication; Sentra holds no "
                     "authorized credentials, so cross-user authorization "
                     "behavior could not be observed."
                 ),

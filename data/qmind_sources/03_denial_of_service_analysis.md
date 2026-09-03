@@ -231,7 +231,7 @@ Normal Users Affected: Yes (cannot get new connections)
 **Likely Cause**: Legitimate viral traffic spike
 **Action**: Scale infrastructure temporarily, monitor for degradation
 
-## SOC-AI Monitoring Implications
+## Sentra AI Monitoring Implications
 
 ### What to Track (Without Classifying as Attack)
 

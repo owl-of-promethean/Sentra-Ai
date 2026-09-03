@@ -2,7 +2,7 @@
 Structured event logging for the Advanced AI [BETA] pipeline.
 
 Events are emitted as single JSON lines prefixed with [ADVANCED-AI]
-so they integrate with Sentinel's existing console/logging output.
+so they integrate with Sentra's existing console/logging output.
 
 Event names follow the conventions:
     sandbox_created, sandbox_failed, sandbox_destroyed,

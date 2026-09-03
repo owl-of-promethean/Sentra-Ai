@@ -1,5 +1,5 @@
 """
-SOC Analyst Authentication for SOC-AI.
+SOC Analyst Authentication for Sentra AI.
 
 Provides a minimal bearer-token authentication layer suitable for a
 hackathon prototype.
@@ -14,7 +14,7 @@ Design:
     For a persistent secret set JWT_SECRET_KEY in the environment.
 
 Environment variables:
-  SOC_ANALYST_EMAIL     — the analyst's login email  (default: admin@sentinel.ai)
+  SOC_ANALYST_EMAIL     — the analyst's login email  (default: admin@sentra.ai)
   SOC_ANALYST_PASSWORD  — the analyst's password     (no default — must be set)
   JWT_SECRET_KEY        — HMAC signing key            (auto-generated if absent)
   TOKEN_EXPIRE_HOURS    — token lifetime in hours     (default: 8)
@@ -50,7 +50,7 @@ _TOKEN_EXPIRE_HOURS = int(os.getenv("TOKEN_EXPIRE_HOURS", "8"))
 # Credential configuration — read once at module load.
 # SOC_ANALYST_EMAIL defaults to a safe demo value.
 # SOC_ANALYST_PASSWORD has no default; must be set explicitly.
-_ANALYST_EMAIL: str = os.getenv("SOC_ANALYST_EMAIL", "admin@sentinel.ai").lower().strip()
+_ANALYST_EMAIL: str = os.getenv("SOC_ANALYST_EMAIL", "admin@sentra.ai").lower().strip()
 _ANALYST_PASSWORD: Optional[str] = os.getenv("SOC_ANALYST_PASSWORD")
 
 # For the hackathon demo, allow a fallback password only when no env var is set.
@@ -70,7 +70,7 @@ class LoginRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "email": "admin@sentinel.ai",
+                "email": "admin@sentra.ai",
                 "password": "your-secure-password"
             }
         }
@@ -186,7 +186,7 @@ def validate_credentials(email: str, password: str) -> bool:
     if not email or not password:
         return False
 
-    # Accept both "admin@sentinel.ai" and "admin" as alias for the demo.
+    # Accept both "admin@sentra.ai" and "admin" as alias for the demo.
     email_lower = email.lower().strip()
     known_email = _ANALYST_EMAIL
     email_ok = (email_lower == known_email) or (email_lower == "admin")

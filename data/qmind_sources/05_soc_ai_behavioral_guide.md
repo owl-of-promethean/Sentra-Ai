@@ -1,4 +1,4 @@
-# SOC-AI Behavioral Evidence Interpretation Guide
+# Sentra AI Behavioral Evidence Interpretation Guide
 
 ## Purpose
 This guide provides cybersecurity knowledge for interpreting behavioral evidence WITHOUT classifying specific attacks. The goal is to help security analysts (and AI systems) understand what observed patterns might indicate, while avoiding premature conclusions.

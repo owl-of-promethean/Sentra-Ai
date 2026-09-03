@@ -1,5 +1,5 @@
 """
-Pydantic schemas for SOC-AI data models.
+Pydantic schemas for Sentra AI data models.
 
 These schemas define the structure of security findings and other data entities.
 """

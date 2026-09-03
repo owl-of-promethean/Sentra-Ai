@@ -1,5 +1,5 @@
 """
-Security Knowledge Retriever for SOC-AI.
+Security Knowledge Retriever for Sentra AI.
 
 Loads relevant cybersecurity knowledge from local Markdown files
 based on behavioral trigger reasons produced by the investigation

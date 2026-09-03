@@ -1,5 +1,5 @@
 """
-Dependency and technology detector for SOC-AI security audits.
+Dependency and technology detector for Sentra AI security audits.
 
 Inspects project manifest files inside a crawled source tree and
 extracts package names, versions, and the package ecosystem.

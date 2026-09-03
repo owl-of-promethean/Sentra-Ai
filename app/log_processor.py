@@ -1,5 +1,5 @@
 """
-Log Processing Module for SOC-AI.
+Log Processing Module for Sentra AI.
 
 Responsibilities:
 

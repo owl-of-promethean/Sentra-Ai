@@ -300,7 +300,7 @@ def _plan_idor(finding, endpoints) -> ValidationPlan:
             "The finding indicates possible insecure direct object "
             "reference. The controlled strategy requests two different "
             "object identifiers without elevated privileges and compares "
-            "responses. If the sandbox requires credentials that Sentinel "
+            "responses. If the sandbox requires credentials that Sentra "
             "does not hold, the result will be INCONCLUSIVE rather than a "
             "guess."
         ),

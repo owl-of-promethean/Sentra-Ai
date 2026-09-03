@@ -34,13 +34,13 @@ SAFE_PAYLOADS = {
     # No payload — plain request.
     "none": None,
     # Benign baseline value.
-    "benign": "sentinel",
+    "benign": "sentra",
     # Error-based SQLi probe: a single quote breaks naive string
     # interpolation and produces a database error WITHOUT extracting,
     # modifying, or destroying any data.
     "sqli_error_probe": "'",
     # Alphanumeric reflection marker — never an executable script.
-    "xss_reflection_marker": "sentinelxss9f3a",
+    "xss_reflection_marker": "sentraxss9f3a",
 }
 
 # Hard limits
@@ -196,14 +196,14 @@ class ValidationExecutor:
                 resp = client.get(
                     url,
                     params=params,
-                    headers={"User-Agent": "Sentinel-AdvancedAI-Validator/0.1"},
+                    headers={"User-Agent": "Sentra-AdvancedAI-Validator/0.1"},
                 )
             else:  # POST
                 data = {test.parameter: payload} if (test.parameter and payload is not None) else {}
                 resp = client.post(
                     url,
                     data=data,
-                    headers={"User-Agent": "Sentinel-AdvancedAI-Validator/0.1"},
+                    headers={"User-Agent": "Sentra-AdvancedAI-Validator/0.1"},
                 )
             status = resp.status_code
             headers = dict(resp.headers)

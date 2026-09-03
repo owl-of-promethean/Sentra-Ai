@@ -1,169 +1,100 @@
-# SOC-AI Setup Instructions
+# Sentra AI — Setup Instructions
 
 ## Prerequisites
 
-- Python 3.8 or higher
-- A Gemini API key from Google AI Studio
+- Python 3.10+
+- A Groq API key (free at <https://console.groq.com>) — powers all AI features
+- A modern browser
 
-## Step 1: Install Dependencies
+## Step 1 — Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-This will install:
-- FastAPI (web framework)
-- uvicorn (ASGI server)
-- Pydantic (data validation)
-- python-dotenv (environment variables)
-- google-generativeai (AI API client)
-- httpx (HTTP client)
+This installs FastAPI, uvicorn, Pydantic, python-dotenv, the OpenAI client
+(used against Groq's OpenAI-compatible API), httpx, and python-jose.
 
-## Step 2: Configure Environment Variables
-
-Copy the example environment file:
+## Step 2 — Configure environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-Edit the `.env` file and add your Gemini API key:
+Edit `.env` and set at minimum:
 
 ```
-GEMINI_API_KEY=your-actual-api-key-here
+GROQ_API_KEY=your-groq-api-key
 ```
 
-**Important**: Never commit your `.env` file to version control!
+Optional (see `.env.example` for all variables):
 
-## Step 3: Run the Application
+- `SOC_ANALYST_EMAIL` / `SOC_ANALYST_PASSWORD` — analyst login (demo fallback
+  is `admin@sentra.ai` / `password`)
+- `JWT_SECRET_KEY` — set a stable secret if sessions should survive restarts
+- `ADVANCED_AI_USE_GEMINI=false` — forces the deterministic (offline) mode for
+  Advanced AI demos
 
-Option 1 - Using Python directly:
+**Never commit your `.env` file.**
+
+## Step 3 — Start the backend
 
 ```bash
-python -m app.main
+uvicorn app.main:app --reload --port 8000
 ```
 
-Option 2 - Using uvicorn:
+The API is served at `http://localhost:8000` (interactive docs at
+`/docs`).
+
+## Step 4 — Verify the backend
 
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+curl http://localhost:8000/
+curl http://localhost:8000/health
 ```
 
-The server will start on `http://localhost:8000`
+`/` returns the running service; `/health` reports `healthy` once
+`GROQ_API_KEY` is configured (`degraded` otherwise).
 
-## Step 4: Verify It's Running
+## Step 5 — Start the frontend
 
-Open your browser or use curl:
+The frontend is static — no build step. In a second terminal:
 
 ```bash
-curl http://localhost:8000
+cd "frontend/AI hackathon"
+python -m http.server 5500
 ```
 
-You should see:
+Open <http://localhost:5500/> — the landing page is the default homepage.
+The SOC dashboard is at <http://localhost:5500/dashboard.html>; sign in
+there with `admin@sentra.ai` / `password`. Opening `dashboard.html` directly
+in a browser also works. The frontend expects
+the backend at `http://localhost:8000` (`API_CONFIG.BASE_URL` in `script.js`).
 
-```json
-{
-  "status": "running",
-  "service": "SOC-AI",
-  "version": "0.1.0",
-  "message": "AI-Assisted SOC Analyst System"
-}
+## Step 6 — Exercise the pipeline
+
+```bash
+# Ingest a suspicious log (repeat a few times within 10 seconds)
+curl -X POST http://localhost:8000/logs -H "Content-Type: application/json" \
+  -d '{"timestamp":"2026-09-03T10:00:00Z","source_ip":"185.220.101.42","method":"POST","path":"/api/login","status":401,"user_agent":"curl/8.0"}'
 ```
 
-## Testing the Modules
+After ~10 seconds the backend prints a window-processing summary; a triggered
+investigation is analyzed by Groq in the background and appears on the
+dashboard SOC page, dashboard alerts, and in `GET /history`.
 
-### Test Log Processing
+From the SOC event modal you can then start an audit of the authorized
+application, send findings to Advanced AI validation, and ask Copilot about
+any object.
 
-Create a test script `test_log_processor.py`:
+## Troubleshooting
 
-```python
-from app.log_processor import get_log_processor
-
-processor = get_log_processor()
-
-# Load sample logs
-logs = processor.load_logs('sample_logs.json')
-print(f"Loaded {len(logs)} logs")
-
-# Prepare investigation window
-window = processor.prepare_investigation_window(
-    logs=logs,
-    trigger_reason="Test investigation"
-)
-print(f"Investigation ID: {window['id']}")
-```
-
-### Test Schemas
-
-```python
-from app.schemas import SecurityFinding
-
-finding = SecurityFinding(
-    severity="HIGH",
-    attack_type="SQL Injection",
-    confidence=0.92,
-    summary="Test finding",
-    evidence=["Evidence item 1"],
-    recommended_actions=["Action 1"]
-)
-
-print(finding.model_dump_json(indent=2))
-```
-
-### Test LLM Integration (requires API key)
-
-```python
-from app.llm import analyze_security_event
-
-logs = [
-    {
-        "timestamp": "2026-08-22T10:30:00Z",
-        "event_type": "authentication_failure",
-        "source_ip": "192.168.1.100",
-        "details": {"username": "admin"}
-    }
-]
-
-result = analyze_security_event(
-    logs=logs,
-    context="Suspicious activity detected"
-)
-
-if result["success"]:
-    print(result["analysis"])
-else:
-    print("Error:", result["error"])
-```
-
-## Project Structure
-
-```
-soc-ai/
-├── app/                    # Main application code
-│   ├── __init__.py
-│   ├── main.py            # FastAPI app
-│   ├── config.py          # Configuration
-│   ├── llm.py             # Gemini client
-│   ├── log_processor.py   # Log processing utilities
-│   └── schemas.py         # Data models
-├── data/
-│   ├── logs/              # Security log storage
-│   └── knowledge/         # RAG knowledge (future)
-├── tests/                 # Tests (future)
-├── .env                   # Your API keys (created by you)
-├── .env.example           # Template
-├── .gitignore
-├── requirements.txt
-└── README.md
-```
-
-## Next Steps
-
-After completing the setup:
-
-1. **Day 1-2**: Implement investigation triggers and detection rules
-2. **Day 2-3**: Build the RAG knowledge base with CVE/CWE/OWASP data
-3. **Day 3-4**: Integrate source code inspection capabilities
-4. **Day 4-5**: Create the SOC analyst dashboard
-
-Happy hacking! 🚀
+- **`/health` says degraded** — `GROQ_API_KEY` is missing in `.env`; AI
+  features will return structured errors until it is set.
+- **Login fails** — check `SOC_ANALYST_EMAIL` / `SOC_ANALYST_PASSWORD`; the
+  demo fallback password `password` only applies when no password is set.
+- **Frontend shows "Cannot reach the backend"** — the backend is not running
+  on port 8000, or `API_CONFIG.BASE_URL` in `script.js` points elsewhere.
+- **Advanced AI jobs fail** — sandbox targets must be reachable at the URL
+  configured in the authorized application registry; set
+  `ADVANCED_AI_USE_GEMINI=false` for offline deterministic runs.

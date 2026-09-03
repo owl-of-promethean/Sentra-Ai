@@ -1,5 +1,5 @@
 """
-Audit engine for SOC-AI Phase 2.
+Audit engine for Sentra AI Phase 2.
 
 Orchestrates the full Quick Scan pipeline:
   1. Crawl the source directory (SourceCrawler)

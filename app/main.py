@@ -1,5 +1,5 @@
 """
-SOC-AI
+Sentra AI
 AI-Assisted Security Operations Center System
 
 Pipeline overview:
@@ -16,7 +16,7 @@ Pipeline overview:
           |
     Knowledge retrieval
           |
-    Gemini analysis  (background task)
+    Groq LLM analysis  (background task)
           |
     SecurityFinding
 
@@ -255,14 +255,14 @@ async def periodic_window_processing():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print()
-    print("Starting SOC-AI...")
+    print("Starting Sentra AI...")
     print("10-second log processing windows enabled.")
 
     background_task = asyncio.create_task(periodic_window_processing())
 
     yield
 
-    print("Shutting down SOC-AI...")
+    print("Shutting down Sentra AI...")
     background_task.cancel()
     try:
         await background_task
@@ -275,7 +275,7 @@ async def lifespan(app: FastAPI):
 # ==============================================================
 
 app = FastAPI(
-    title="SOC-AI",
+    title="Sentra AI",
     description="AI-Assisted Security Operations Center System",
     version="0.2.0",
     lifespan=lifespan
@@ -304,7 +304,7 @@ async def root():
     """Basic system status."""
     return {
         "status":  "running",
-        "service": "SOC-AI",
+        "service":  "Sentra AI",
         "version": "0.2.0",
         "message": "AI-Assisted SOC Analyst System",
     }
@@ -1018,7 +1018,7 @@ async def copilot_ask(
     analyst: str = Depends(require_auth),
 ):
     """
-    Ask Sentinel Copilot a question about a specific security context object.
+    Ask Sentra Copilot a question about a specific security context object.
 
     Security contract:
       - The caller must supply a context_type ('investigation' or 'audit')
@@ -1026,7 +1026,7 @@ async def copilot_ask(
       - The backend resolves and validates the context object.
       - If the object does not exist, 404 is returned.
       - The model receives a system instruction that restricts it to
-        answering only about the supplied Sentinel security context.
+        answering only about the supplied Sentra security context.
       - Questions unrelated to the supplied context are refused by the model.
       - The backend enforces this; the frontend restriction is UX only.
 

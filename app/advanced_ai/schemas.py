@@ -227,7 +227,7 @@ class AdvancedAIJobCreate(BaseModel):
     """
     Body of POST /advanced-ai/jobs.
 
-    At least one Sentinel context (investigation_id or audit_id) is
+    At least one Sentra context (investigation_id or audit_id) is
     required. The target is resolved server-side from the trusted
     registry — arbitrary URLs are never accepted.
 
@@ -270,7 +270,7 @@ class AdvancedAIJob(BaseModel):
     status: JobStatus = Field(default="queued")
     cancel_requested: bool = Field(default=False, exclude=True)
 
-    # Sentinel context
+    # Sentra context
     investigation_id: Optional[str] = Field(default=None)
     investigation_display_id: Optional[str] = Field(default=None)
     audit_id: Optional[str] = Field(default=None)

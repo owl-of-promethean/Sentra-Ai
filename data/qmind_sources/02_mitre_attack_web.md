@@ -3,7 +3,7 @@
 ## Overview
 MITRE ATT&CK is a globally accessible knowledge base of adversary tactics and techniques based on real-world observations. This document focuses on techniques relevant to web application security monitoring.
 
-## Tactic Categories Relevant to SOC-AI
+## Tactic Categories Relevant to Sentra AI
 
 ### 1. Reconnaissance (TA0043)
 

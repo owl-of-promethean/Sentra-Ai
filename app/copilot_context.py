@@ -424,9 +424,9 @@ def build_copilot_context(context_type: str, context_obj: dict) -> dict:
 # ==============================================================
 
 _SYSTEM_INSTRUCTION = (
-    "You are Sentinel Copilot, an AI assistant embedded in a Security Operations platform.\n"
+    "You are Sentra Copilot, an AI assistant embedded in a Security Operations platform.\n"
     "You are NOT a general-purpose assistant.\n"
-    "You MUST only answer questions that are directly related to the Sentinel security context "
+    "You MUST only answer questions that are directly related to the Sentra security context "
     "object supplied below.\n"
     "If the question is unrelated to the supplied security context, refuse politely and "
     "briefly (one sentence) without providing any other information.\n"
@@ -452,7 +452,7 @@ def build_copilot_prompt(
     return (
         f"{_SYSTEM_INSTRUCTION}\n\n"
         f"{'=' * 40}\n"
-        f"SENTINEL SECURITY CONTEXT ({context_type.upper()})\n"
+        f"SENTRA SECURITY CONTEXT ({context_type.upper()})\n"
         f"{'=' * 40}\n"
         f"{ctx_str}\n\n"
         f"{'=' * 40}\n"
@@ -483,7 +483,7 @@ def enforce_token_limit(prompt: str, max_tokens: int = MAX_CONTEXT_TOKENS) -> st
         return prompt
 
     # Locate the context block boundaries so we trim context, not question.
-    ctx_start_marker = "SENTINEL SECURITY CONTEXT"
+    ctx_start_marker = "SENTRA SECURITY CONTEXT"
     question_marker = "ANALYST QUESTION"
 
     ctx_start = prompt.find(ctx_start_marker)
